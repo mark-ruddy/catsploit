@@ -1,3 +1,4 @@
+mod core;
 mod module;
 
 pub fn add(left: usize, right: usize) -> usize {
