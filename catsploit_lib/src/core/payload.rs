@@ -13,6 +13,12 @@ pub trait Payload {
         Kind::Single
     }
 
+    /// Payloads may need to carry out a task before executing
+    /// Revshells for example may use a pretask to start the listener on the attacking machine
+    fn pretask(&self) -> Result<(), Box<dyn Error>> {
+        Ok(())
+    }
+
     fn blob(&self) -> Vec<u8>;
 
     fn blob_as_string(&self) -> Result<String, Box<dyn Error>> {

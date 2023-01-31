@@ -1,6 +1,6 @@
-mod core;
-mod module;
-mod util;
+pub mod core;
+pub mod module;
+pub mod util;
 
 pub fn add(left: usize, right: usize) -> usize {
     left + right

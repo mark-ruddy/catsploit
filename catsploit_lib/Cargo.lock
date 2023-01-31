@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "catsploit-lib"
+name = "catsploit_lib"
 version = "0.1.0"
 dependencies = [
  "log",
