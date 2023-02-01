@@ -22,6 +22,7 @@ impl GenericTcpHandler {
     }
 
     pub fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
+        // TODO: need timeout here while accepting
         let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
         thread::spawn(move || match Self::open_shell(stream) {

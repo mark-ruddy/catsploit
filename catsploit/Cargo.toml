@@ -1,5 +1,5 @@
 [package]
-name = "catsploit_cli"
+name = "catsploit"
 version = "0.1.0"
 edition = "2021"
 
