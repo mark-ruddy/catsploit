@@ -1,17 +1,12 @@
-use log::{error, info};
-use std::time::Duration;
+use cli::{handle_input, print_banner, print_prompt};
+use std::{error::Error, io, io::Write};
 
-use catsploit_lib::core::exploit::remote_tcp::RemoteTcp;
-use catsploit_lib::core::exploit::Exploit;
-use catsploit_lib::module::exploit::ftp::vsftpd_234_backdoor::Vsftpd234Backdoor;
-
+mod cli;
 mod module_index;
 mod show;
 
-fn main() {
+fn main() -> Result<(), Box<dyn Error>> {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
-    show::exploits();
-
     /*
     println!("lets exploit vsftpd v2.3.4");
     println!(
@@ -36,4 +31,13 @@ fn main() {
     */
 
     // TODO: basic CLI interface, lets just code, can refactor later
+    print_banner();
+    loop {
+        print_prompt(None);
+        io::stdout().flush()?;
+
+        let mut input = String::new();
+        io::stdin().read_line(&mut input)?;
+        handle_input(&input.trim());
+    }
 }
