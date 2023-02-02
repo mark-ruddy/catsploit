@@ -5,11 +5,12 @@ use catsploit_lib::core::exploit::remote_tcp::RemoteTcp;
 use catsploit_lib::core::exploit::Exploit;
 use catsploit_lib::module::exploit::ftp::vsftpd_234_backdoor::Vsftpd234Backdoor;
 
-mod cli;
+mod module_index;
+mod show;
 
 fn main() {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
-    cli::show_exploits();
+    show::exploits();
 
     /*
     println!("lets exploit vsftpd v2.3.4");
