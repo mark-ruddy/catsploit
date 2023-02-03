@@ -9,3 +9,4 @@ edition = "2021"
 catsploit_lib = { path = "../catsploit_lib" }
 log = "0.4.17"
 env_logger = "0.10.0"
+prettytable-rs = "0.10.0"

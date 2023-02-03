@@ -1,5 +1,6 @@
 use crate::module_index;
 use catsploit_lib::core::exploit;
+use prettytable::Table;
 
 #[derive(Debug)]
 struct ExploitShowInfo {
@@ -16,14 +17,14 @@ fn extract_exploit_show_info(info: exploit::Info) -> ExploitShowInfo {
     }
 }
 
-fn print_exploit_show_info(info: ExploitShowInfo) {
-    println!("{:?}", info);
-}
-
 pub fn exploits() {
     let exploits = module_index::exploit::exploits();
-    for exploit in exploits {
+
+    let mut table = Table::new();
+    table.add_row(row!["#", "Module Path", "Name", "Ranking"]);
+    for (i, exploit) in exploits.iter().enumerate() {
         let info = extract_exploit_show_info(exploit.info());
-        print_exploit_show_info(info);
+        table.add_row(row![i, info.module_path, info.name, info.ranking]);
     }
+    table.printstd();
 }
