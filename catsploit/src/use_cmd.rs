@@ -1,7 +1,7 @@
 use catsploit_lib::module::index;
 use std::error::Error;
 
-pub fn exploit(module_path: &str) -> Result<Option<String>, Box<dyn Error>> {
+pub fn exploit(module_path: &str) -> Result<(), Box<dyn Error>> {
     let exploits = index::exploits();
     let mut found = false;
     for exploit in exploits {
@@ -12,5 +12,5 @@ pub fn exploit(module_path: &str) -> Result<Option<String>, Box<dyn Error>> {
     if !found {
         return Err(format!("No exploit found with the module path '{}'", module_path).into());
     }
-    Ok(Some(module_path.to_string()))
+    Ok(())
 }
