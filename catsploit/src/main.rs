@@ -4,8 +4,8 @@ use cli::{get_user_input, handle_input, print_banner, print_prompt};
 use std::{error::Error, io, io::Write};
 
 mod cli;
-mod module_index;
 mod show;
+mod use_cmd;
 
 const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
 

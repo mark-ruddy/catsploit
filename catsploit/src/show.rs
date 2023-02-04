@@ -1,5 +1,4 @@
-use crate::module_index;
-use catsploit_lib::core::exploit;
+use catsploit_lib::{core::exploit, module::index};
 use prettytable::Table;
 
 #[derive(Debug)]
@@ -18,7 +17,7 @@ fn extract_exploit_show_info(info: exploit::Info) -> ExploitShowInfo {
 }
 
 pub fn exploits() {
-    let exploits = module_index::exploit::exploits();
+    let exploits = index::exploits();
 
     let mut table = Table::new();
     table.add_row(row!["#", "Module Path", "Name", "Ranking"]);

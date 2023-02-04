@@ -26,7 +26,7 @@ pub fn print_banner() {
 
 pub fn print_prompt(content: &Option<String>) {
     match content {
-        Some(content) => print!("catsploit ({})>", content),
+        Some(content) => print!("catsploit ({})> ", content),
         None => print!("catsploit> "),
     }
 }
