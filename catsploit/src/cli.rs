@@ -1,5 +1,7 @@
 use std::{error::Error, io, process};
 
+use catsploit_lib::{core::exploit, module::Kind};
+
 mod subcmd;
 
 pub struct UserInput {
@@ -20,6 +22,11 @@ impl Default for UserInput {
 
 pub struct Cli {
     pub prompt: Option<String>,
+
+    pub selected_module_kind: Option<Kind>,
+    pub selected_module_path: Option<String>,
+
+    pub exploit_info: Option<exploit::Info>,
 }
 
 impl Cli {
@@ -71,13 +78,18 @@ impl Cli {
     pub fn handle_input(&mut self, input: UserInput) -> Result<(), Box<dyn Error>> {
         match input.cmd.as_str() {
             "show" => self.handle_show(input.subcmd)?,
+            "info" => self.handle_info()?,
             "use" => self.handle_use(input.subcmd)?,
             "help" => println!("No help supported yet"),
             "exit" => {
                 println!("Exiting...");
                 process::exit(0);
             }
-            _ => println!("Unknown command '{}'", input.cmd),
+            _ => {
+                if input.cmd != "" {
+                    println!("Unknown command '{}'", input.cmd);
+                }
+            }
         };
         Ok(())
     }

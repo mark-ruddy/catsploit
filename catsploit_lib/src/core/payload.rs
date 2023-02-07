@@ -21,11 +21,11 @@ pub trait Payload {
 
     fn blob(&self) -> Vec<u8>;
 
-    fn blob_as_string(&self) -> Result<String, Box<dyn Error>> {
+    fn blob_to_string(&self) -> Result<String, Box<dyn Error>> {
         let blob = self.blob();
         match String::from_utf8(blob) {
             Ok(blob_string) => Ok(blob_string),
-            Err(e) => Err(format!("failed to convert blob to UTF8 string: {}", e).into()),
+            Err(e) => Err(format!("failed to convert blob to UTF-8 string: {}", e).into()),
         }
     }
 

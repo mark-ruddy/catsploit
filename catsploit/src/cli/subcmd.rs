@@ -1,3 +1,5 @@
+use catsploit_lib::module::Kind;
+
 use crate::{show, use_cmd, MODULE_KINDS};
 use std::error::Error;
 
@@ -39,14 +41,22 @@ impl Cli {
         Ok(())
     }
 
+    pub fn handle_info(&self) -> Result<(), Box<dyn Error>> {
+        Ok(())
+    }
+
     pub fn handle_use(&mut self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
         match subcmd {
             Some(subcmd) => {
                 let parsed_module_path = self.parse_module_path(&subcmd)?;
                 match parsed_module_path.kind.as_str() {
                     "exploit" => {
-                        use_cmd::exploit(&subcmd)?;
-                        self.prompt = Some(subcmd);
+                        let exploit = use_cmd::exploit(&subcmd)?;
+                        let exploit_info = exploit.info();
+                        self.prompt = Some(exploit_info.module_path);
+                        self.selected_module_kind = Some(Kind::Exploit);
+                        self.selected_module_path = Some(exploit_info.module_path);
+                        self.exploit_info = Some(exploit_info);
                     }
                     _ => (),
                 }
