@@ -1,17 +1,41 @@
-use std::error::Error;
+use std::{error::Error, fmt};
 
 pub mod reverse;
 
+#[derive(Debug)]
 pub enum Kind {
-    Single,
-    Adapter,
+    ReverseShell,
+    DirectShell,
+}
+
+impl fmt::Display for Kind {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Debug::fmt(self, f)
+    }
+}
+
+pub struct Info {
+    pub descriptive_name: String,
+    pub module_path: String,
+    pub kind: String,
+    pub description: Option<String>,
+    pub license: Option<String>,
+    pub author: Option<Vec<String>>,
+    pub references: Option<Vec<String>>,
+    pub platform: Option<Vec<String>>,
 }
 
 // TODO: need a way for exploits to pick a default payload, similarly exploits need to be searchable etc too.
 pub trait Payload {
-    fn kind() -> Kind {
-        Kind::Single
+    fn default() -> Self
+    where
+        Self: Sized;
+
+    fn kind(&self) -> Kind {
+        Kind::ReverseShell
     }
+
+    fn info(&self) -> Info;
 
     /// Payloads may need to carry out a task before executing
     /// Revshells for example may use a pretask to start the listener on the attacking machine
@@ -29,7 +53,7 @@ pub trait Payload {
         }
     }
 
-    fn blob_insert(blob: Vec<u8>) -> Vec<u8> {
+    fn blob_insert(&self, blob: Vec<u8>) -> Vec<u8> {
         // TODO: Blob insert for now does nothing except return the raw blob
         blob
     }

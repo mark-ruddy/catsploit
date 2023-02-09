@@ -4,6 +4,8 @@ use cli::Cli;
 use std::{error::Error, io, io::Write};
 
 mod cli;
+mod info;
+mod opts;
 mod show;
 mod use_cmd;
 
@@ -13,7 +15,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 
     // TODO: basic CLI interface, lets just code, can refactor later
-    let mut cli = Cli { prompt: None };
+    let mut cli = Cli {
+        prompt: None,
+        selected_module_kind: None,
+        selected_module_path: None,
+
+        exploit_info: None,
+        exploit_opts: None,
+
+        payload_info: None,
+        payload_opts: None,
+    };
     cli.print_banner();
     loop {
         cli.print_prompt();

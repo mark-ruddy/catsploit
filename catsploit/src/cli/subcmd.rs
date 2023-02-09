@@ -1,6 +1,6 @@
 use catsploit_lib::module::Kind;
 
-use crate::{show, use_cmd, MODULE_KINDS};
+use crate::{info, show, use_cmd, MODULE_KINDS};
 use std::error::Error;
 
 use super::Cli;
@@ -34,6 +34,7 @@ impl Cli {
         match subcmd {
             Some(subcmd) => match subcmd.as_str() {
                 "exploits" => show::exploits(),
+                "payloads" => show::payloads(),
                 _ => return Err(SHOW_SUBCMD_INCORRECT.into()),
             },
             None => return Err(SHOW_SUBCMD_INCORRECT.into()),
@@ -42,6 +43,16 @@ impl Cli {
     }
 
     pub fn handle_info(&self) -> Result<(), Box<dyn Error>> {
+        // Display exploit info if module kind
+        match &self.selected_module_kind {
+            Some(selected_module_kind) => match selected_module_kind {
+                // TODO: Investigate why these parameters must be references
+                Kind::Exploit => info::exploit(&self.exploit_info, &self.exploit_opts)?,
+                Kind::Payload => info::payload(&self.payload_info, &self.payload_opts)?,
+                Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+            },
+            None => return Err("Info requires a module to be selected".into()),
+        }
         Ok(())
     }
 
@@ -53,10 +64,19 @@ impl Cli {
                     "exploit" => {
                         let exploit = use_cmd::exploit(&subcmd)?;
                         let exploit_info = exploit.info();
-                        self.prompt = Some(exploit_info.module_path);
+                        self.prompt = Some(exploit_info.module_path.clone());
                         self.selected_module_kind = Some(Kind::Exploit);
-                        self.selected_module_path = Some(exploit_info.module_path);
+                        self.selected_module_path = Some(exploit_info.module_path.clone());
                         self.exploit_info = Some(exploit_info);
+                        self.exploit_opts = Some(exploit.opts());
+                    }
+                    "payload" => {
+                        let payload = use_cmd::payload(&subcmd)?;
+                        let payload_info = payload.info();
+                        self.prompt = Some(payload_info.module_path.clone());
+                        self.selected_module_kind = Some(Kind::Payload);
+                        self.selected_module_path = Some(payload_info.module_path.clone());
+                        self.payload_info = Some(payload_info);
                     }
                     _ => (),
                 }

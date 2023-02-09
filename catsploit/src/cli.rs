@@ -1,6 +1,9 @@
 use std::{error::Error, io, process};
 
-use catsploit_lib::{core::exploit, module::Kind};
+use catsploit_lib::{
+    core::{exploit, opt::Opt, payload},
+    module::Kind,
+};
 
 mod subcmd;
 
@@ -27,6 +30,10 @@ pub struct Cli {
     pub selected_module_path: Option<String>,
 
     pub exploit_info: Option<exploit::Info>,
+    pub exploit_opts: Option<Vec<Opt>>,
+
+    pub payload_info: Option<payload::Info>,
+    pub payload_opts: Option<Vec<Opt>>,
 }
 
 impl Cli {
@@ -39,6 +46,17 @@ impl Cli {
             Some(prompt) => print!("catsploit ({})> ", prompt),
             None => print!("catsploit> "),
         }
+    }
+
+    pub fn help(&self) {
+        // TODO: need to make help look better with tables or smth
+        println!(
+            "# Core Commands \
+            \n- show (Show available modules) \
+            \n- info (Display information for current module) \
+            \n- use  (Select a module) \
+            \n- exit (Exit catsploit console)"
+        );
     }
 
     pub fn get_user_input(&self) -> Result<UserInput, Box<dyn Error>> {
@@ -80,7 +98,7 @@ impl Cli {
             "show" => self.handle_show(input.subcmd)?,
             "info" => self.handle_info()?,
             "use" => self.handle_use(input.subcmd)?,
-            "help" => println!("No help supported yet"),
+            "help" => self.help(),
             "exit" => {
                 println!("Exiting...");
                 process::exit(0);
