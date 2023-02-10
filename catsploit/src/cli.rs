@@ -36,10 +36,7 @@ pub struct Cli {
     pub selected_module_opts: Option<Vec<CliOpt>>,
 
     pub exploit_info: Option<exploit::Info>,
-    pub exploit_opts: Option<Vec<Opt>>,
-
     pub payload_info: Option<payload::Info>,
-    pub payload_opts: Option<Vec<Opt>>,
 }
 
 impl Cli {

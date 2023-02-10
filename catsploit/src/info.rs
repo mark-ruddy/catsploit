@@ -1,7 +1,7 @@
-use catsploit_lib::core::{exploit, opt::Opt, payload};
+use catsploit_lib::core::{exploit, payload};
 use std::error::Error;
 
-use crate::opts::print_opts;
+use crate::{cli::CliOpt, opts::print_cliopts};
 
 const NO_INFO: &str = "No module info loaded";
 
@@ -9,7 +9,7 @@ const NO_INFO: &str = "No module info loaded";
 
 pub fn print_exploit(
     info: &Option<exploit::Info>,
-    opts: &Option<Vec<Opt>>,
+    cliopts: &Option<Vec<CliOpt>>,
 ) -> Result<(), Box<dyn Error>> {
     let info = match info {
         Some(info) => info,
@@ -19,14 +19,14 @@ pub fn print_exploit(
     println!("EXPLOIT NAME: {}", info.descriptive_name);
     println!("EXPLOIT RANKING: {}", info.ranking);
 
-    print_opts(opts);
+    print_cliopts(cliopts);
 
     Ok(())
 }
 
 pub fn print_payload(
     info: &Option<payload::Info>,
-    opts: &Option<Vec<Opt>>,
+    cliopts: &Option<Vec<CliOpt>>,
 ) -> Result<(), Box<dyn Error>> {
     let info = match info {
         Some(info) => info,
@@ -36,7 +36,7 @@ pub fn print_payload(
     println!("PAYLOAD NAME: {}", info.descriptive_name);
     println!("PAYLOAD KIND: {}", info.kind);
 
-    print_opts(opts);
+    print_cliopts(cliopts);
 
     Ok(())
 }

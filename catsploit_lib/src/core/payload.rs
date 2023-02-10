@@ -1,5 +1,7 @@
 use std::{error::Error, fmt};
 
+use super::opt::Opt;
+
 pub mod reverse;
 
 #[derive(Debug)]
@@ -57,4 +59,6 @@ pub trait Payload {
         // TODO: Blob insert for now does nothing except return the raw blob
         blob
     }
+
+    fn opts(&self) -> Vec<Opt>;
 }

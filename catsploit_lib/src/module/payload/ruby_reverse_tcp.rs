@@ -1,5 +1,6 @@
 use crate::core::{
     handler::generic_tcp_handler::GenericTcpHandler,
+    opt::Opt,
     payload::{reverse::Reverse, Info, Payload},
 };
 
@@ -37,5 +38,10 @@ impl Payload for RubyReverseTcp {
             references: None,
             platform: None,
         }
+    }
+
+    fn opts(&self) -> Vec<Opt> {
+        let opts: Vec<Opt> = Vec::new();
+        opts
     }
 }

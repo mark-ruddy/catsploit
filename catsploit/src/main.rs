@@ -8,6 +8,7 @@ mod info;
 mod opts;
 mod show;
 mod use_cmd;
+mod util;
 
 const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
 
@@ -22,10 +23,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         selected_module_opts: None,
 
         exploit_info: None,
-        exploit_opts: None,
-
         payload_info: None,
-        payload_opts: None,
     };
     cli.print_banner();
     loop {

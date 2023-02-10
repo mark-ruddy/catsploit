@@ -1,6 +1,6 @@
 use catsploit_lib::module::Kind;
 
-use crate::{info, show, use_cmd, MODULE_KINDS};
+use crate::{info, show, use_cmd, util::parse_cliopts, MODULE_KINDS};
 use std::error::Error;
 
 use super::Cli;
@@ -48,8 +48,12 @@ impl Cli {
             Some(selected_module_kind) => match selected_module_kind {
                 // TODO: Investigate why these parameters must be references
                 // TODO: Need to have opts stored in the CLI...can't just print what the library knows
-                Kind::Exploit => info::print_exploit(&self.exploit_info, &self.exploit_opts)?,
-                Kind::Payload => info::print_payload(&self.payload_info, &self.payload_opts)?,
+                Kind::Exploit => {
+                    info::print_exploit(&self.exploit_info, &self.selected_module_opts)?
+                }
+                Kind::Payload => {
+                    info::print_payload(&self.payload_info, &self.selected_module_opts)?
+                }
                 Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             },
             None => return Err("Info requires a module to be selected".into()),
@@ -69,7 +73,7 @@ impl Cli {
                         self.selected_module_kind = Some(Kind::Exploit);
                         self.selected_module_path = Some(exploit_info.module_path.clone());
                         self.exploit_info = Some(exploit_info);
-                        self.exploit_opts = Some(exploit.opts());
+                        self.selected_module_opts = Some(parse_cliopts(exploit.opts()));
                     }
                     "payload" => {
                         let payload = use_cmd::payload(&subcmd)?;
@@ -78,6 +82,7 @@ impl Cli {
                         self.selected_module_kind = Some(Kind::Payload);
                         self.selected_module_path = Some(payload_info.module_path.clone());
                         self.payload_info = Some(payload_info);
+                        self.selected_module_opts = Some(parse_cliopts(payload.opts()));
                     }
                     _ => (),
                 }
