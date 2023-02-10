@@ -1,6 +1,8 @@
 use catsploit_lib::core::{exploit, opt::Opt, payload};
 use std::error::Error;
 
+use crate::opts::print_opts;
+
 const NO_INFO: &str = "No module info loaded";
 
 // TODO: need a consistent way to print tabled data without borders
@@ -16,6 +18,9 @@ pub fn print_exploit(
 
     println!("EXPLOIT NAME: {}", info.descriptive_name);
     println!("EXPLOIT RANKING: {}", info.ranking);
+
+    print_opts(opts);
+
     Ok(())
 }
 
@@ -30,5 +35,8 @@ pub fn print_payload(
 
     println!("PAYLOAD NAME: {}", info.descriptive_name);
     println!("PAYLOAD KIND: {}", info.kind);
+
+    print_opts(opts);
+
     Ok(())
 }

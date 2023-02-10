@@ -47,8 +47,9 @@ impl Cli {
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
                 // TODO: Investigate why these parameters must be references
-                Kind::Exploit => info::exploit(&self.exploit_info, &self.exploit_opts)?,
-                Kind::Payload => info::payload(&self.payload_info, &self.payload_opts)?,
+                // TODO: Need to have opts stored in the CLI...can't just print what the library knows
+                Kind::Exploit => info::print_exploit(&self.exploit_info, &self.exploit_opts)?,
+                Kind::Payload => info::print_payload(&self.payload_info, &self.payload_opts)?,
                 Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             },
             None => return Err("Info requires a module to be selected".into()),

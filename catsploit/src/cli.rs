@@ -7,6 +7,12 @@ use catsploit_lib::{
 
 mod subcmd;
 
+/// CliOpt holds a value assigned by the user to a library option
+pub struct CliOpt {
+    pub opt: Opt,
+    pub value: Option<String>,
+}
+
 pub struct UserInput {
     pub cmd: String,
     pub subcmd: Option<String>,
@@ -25,9 +31,9 @@ impl Default for UserInput {
 
 pub struct Cli {
     pub prompt: Option<String>,
-
     pub selected_module_kind: Option<Kind>,
     pub selected_module_path: Option<String>,
+    pub selected_module_opts: Option<Vec<CliOpt>>,
 
     pub exploit_info: Option<exploit::Info>,
     pub exploit_opts: Option<Vec<Opt>>,
