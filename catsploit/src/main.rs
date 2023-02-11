@@ -4,11 +4,6 @@ use cli::Cli;
 use std::{error::Error, io, io::Write};
 
 mod cli;
-mod info;
-mod opts;
-mod show;
-mod use_cmd;
-mod util;
 
 const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
 
@@ -20,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         prompt: None,
         selected_module_kind: None,
         selected_module_path: None,
-        selected_module_opts: None,
+        selected_module_cliopts: None,
 
         exploit_info: None,
         payload_info: None,

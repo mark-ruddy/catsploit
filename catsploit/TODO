@@ -1,2 +1,0 @@
-- Full restructure of CLI codebase, the current structure of cli.rs -> cli/subcmd.rs then modules related to subcmds under src/ doesn't make much sense
-- Automated tests

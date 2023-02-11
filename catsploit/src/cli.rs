@@ -5,7 +5,8 @@ use catsploit_lib::{
     module::Kind,
 };
 
-mod subcmd;
+mod cmd;
+mod handler;
 
 /// CliOpt holds a value assigned by the user to a library option
 pub struct CliOpt {
@@ -33,7 +34,7 @@ pub struct Cli {
     pub prompt: Option<String>,
     pub selected_module_kind: Option<Kind>,
     pub selected_module_path: Option<String>,
-    pub selected_module_opts: Option<Vec<CliOpt>>,
+    pub selected_module_cliopts: Option<Vec<CliOpt>>,
 
     pub exploit_info: Option<exploit::Info>,
     pub payload_info: Option<payload::Info>,
@@ -49,17 +50,6 @@ impl Cli {
             Some(prompt) => print!("catsploit ({})> ", prompt),
             None => print!("catsploit> "),
         }
-    }
-
-    pub fn help(&self) {
-        // TODO: need to make help look better with tables or smth
-        println!(
-            "# Core Commands \
-            \n- show (Show available modules) \
-            \n- info (Display information for current module) \
-            \n- use  (Select a module) \
-            \n- exit (Exit catsploit console)"
-        );
     }
 
     pub fn get_user_input(&self) -> Result<UserInput, Box<dyn Error>> {
@@ -101,7 +91,7 @@ impl Cli {
             "show" => self.handle_show(input.subcmd)?,
             "info" => self.handle_info()?,
             "use" => self.handle_use(input.subcmd)?,
-            "help" => self.help(),
+            "help" => self.handle_help(),
             "exit" => {
                 println!("Exiting...");
                 process::exit(0);
