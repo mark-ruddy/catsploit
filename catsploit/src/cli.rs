@@ -1,7 +1,11 @@
 use std::{error::Error, io, process};
 
 use catsploit_lib::{
-    core::{exploit, opt::Opt, payload},
+    core::{
+        exploit::{self, Exploit},
+        opt::Opt,
+        payload::{self, Payload},
+    },
     module::Kind,
 };
 
@@ -36,7 +40,10 @@ pub struct Cli {
     pub selected_module_path: Option<String>,
     pub selected_module_cliopts: Option<Vec<CliOpt>>,
 
+    pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
+
+    pub payload: Option<Box<dyn Payload>>,
     pub payload_info: Option<payload::Info>,
 }
 

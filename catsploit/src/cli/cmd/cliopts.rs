@@ -1,4 +1,5 @@
 use catsploit_lib::core::opt::Opt;
+use prettytable::Table;
 
 use crate::cli::{Cli, CliOpt};
 
@@ -14,24 +15,22 @@ impl Cli {
 
     pub fn print_cliopts(&self) {
         match &self.selected_module_cliopts {
-            Some(cliopts) => {
-                for cliopt in cliopts {
-                    match &cliopt.opt.default_value {
-                        Some(default_value) => match &cliopt.value {
-                            Some(value) => println!(
-                                "{} - {}. DEFAULT {}. CURRENT {}.",
-                                cliopt.opt.name, cliopt.opt.description, default_value, value
-                            ),
-                            None => println!(
-                                "{} - {}. DEFAULT {}.",
-                                cliopt.opt.name, cliopt.opt.description, default_value
-                            ),
-                        },
-                        None => println!("{} - {}", cliopt.opt.name, cliopt.opt.description),
-                    }
+            Some(selected_module_cliopts) => {
+                let mut opts_table = Table::new();
+                opts_table.add_row(row!["Name", "Description", "Default", "Current"]);
+                for cliopt in selected_module_cliopts {
+                    let default_value = cliopt.opt.default_value.clone().unwrap_or("".to_string());
+                    let value = cliopt.value.clone().unwrap_or("".to_string());
+                    opts_table.add_row(row![
+                        cliopt.opt.name,
+                        cliopt.opt.description,
+                        default_value,
+                        value,
+                    ]);
                 }
+                opts_table.printstd();
             }
-            None => return,
+            None => (),
         }
     }
 }

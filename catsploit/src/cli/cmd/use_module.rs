@@ -5,7 +5,7 @@ use std::error::Error;
 use crate::cli::Cli;
 
 impl Cli {
-    pub fn use_exploit(&mut self, module_path: &str) -> Result<Box<dyn Exploit>, Box<dyn Error>> {
+    pub fn use_exploit(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
         let exploits = index::exploits();
         let mut selected_exploit: Option<Box<dyn Exploit>> = None;
         for exploit in exploits {
@@ -19,9 +19,11 @@ impl Cli {
                 self.prompt = Some(exploit_info.module_path.clone());
                 self.selected_module_kind = Some(Kind::Exploit);
                 self.selected_module_path = Some(exploit_info.module_path.clone());
-                self.exploit_info = Some(exploit_info);
                 self.selected_module_cliopts = Some(Cli::parse_cliopts(exploit.opts()));
-                return Ok(exploit);
+
+                self.exploit = Some(exploit);
+                self.exploit_info = Some(exploit_info);
+                Ok(())
             }
             None => {
                 return Err(
@@ -31,7 +33,7 @@ impl Cli {
         }
     }
 
-    pub fn use_payload(&mut self, module_path: &str) -> Result<Box<dyn Payload>, Box<dyn Error>> {
+    pub fn use_payload(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
         let payloads = index::payloads();
         let mut selected_payload: Option<Box<dyn Payload>> = None;
         for payload in payloads {
@@ -45,8 +47,11 @@ impl Cli {
                 self.prompt = Some(payload_info.module_path.clone());
                 self.selected_module_kind = Some(Kind::Payload);
                 self.selected_module_path = Some(payload_info.module_path.clone());
-                self.payload_info = Some(payload_info);
                 self.selected_module_cliopts = Some(Cli::parse_cliopts(payload.opts()));
+
+                self.payload = Some(payload);
+                self.payload_info = Some(payload_info);
+                Ok(())
             }
             None => {
                 return Err(
@@ -54,6 +59,5 @@ impl Cli {
                 )
             }
         }
-        return Err(format!("No payload found with the module path '{}'", module_path).into());
     }
 }

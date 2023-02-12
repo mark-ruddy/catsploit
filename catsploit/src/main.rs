@@ -17,7 +17,10 @@ fn main() -> Result<(), Box<dyn Error>> {
         selected_module_path: None,
         selected_module_cliopts: None,
 
+        exploit: None,
         exploit_info: None,
+
+        payload: None,
         payload_info: None,
     };
     cli.print_banner();

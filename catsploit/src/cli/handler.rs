@@ -41,11 +41,8 @@ impl Cli {
     }
 
     pub fn handle_info(&self) -> Result<(), Box<dyn Error>> {
-        // Display exploit info if module kind
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
-                // TODO: Investigate why these parameters must be references
-                // TODO: Need to have opts stored in the CLI...can't just print what the library knows
                 Kind::Exploit => self.print_exploit()?,
                 Kind::Payload => self.print_payload()?,
                 Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
@@ -71,6 +68,11 @@ impl Cli {
             }
             None => return Err(NO_SUBCMD.into()),
         };
+        Ok(())
+    }
+
+    pub fn handle_run(&self) -> Result<(), Box<dyn Error>> {
+        // TODO: execute exploit here
         Ok(())
     }
 
