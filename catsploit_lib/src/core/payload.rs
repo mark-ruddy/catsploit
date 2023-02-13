@@ -61,4 +61,6 @@ pub trait Payload {
     }
 
     fn opts(&self) -> Vec<Opt>;
+
+    fn apply_opts(&mut self, opts: Vec<Opt>) -> Result<(), Box<dyn Error>>;
 }

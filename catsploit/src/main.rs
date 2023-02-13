@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         prompt: None,
         selected_module_kind: None,
         selected_module_path: None,
-        selected_module_cliopts: None,
+        selected_module_opts: None,
 
         exploit: None,
         exploit_info: None,

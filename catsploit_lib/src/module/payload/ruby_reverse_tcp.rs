@@ -3,8 +3,9 @@ use crate::core::{
     opt::Opt,
     payload::{reverse::Reverse, Info, Payload},
 };
+use log::info;
+use std::error::Error;
 
-// TODO: maybe can remove public
 pub struct RubyReverseTcp {
     pub reverse: Reverse,
 }
@@ -41,7 +42,21 @@ impl Payload for RubyReverseTcp {
     }
 
     fn opts(&self) -> Vec<Opt> {
-        let opts: Vec<Opt> = Vec::new();
+        let mut opts: Vec<Opt> = Vec::new();
+        let mut reverse_opts = Reverse::opts();
+        opts.append(&mut reverse_opts);
         opts
+    }
+
+    fn apply_opts(&mut self, opts: Vec<Opt>) -> Result<(), Box<dyn Error>> {
+        for opt in opts {
+            match opt.name.as_str() {
+                // TODO: Need solution so code below is not duplicated for another module which uses Reverse
+                "LHOST" => self.reverse.lhost = opt.value.ok_or("LHOST option is required")?,
+                "LPORT" => self.reverse.lport = opt.value.ok_or("LPORT option is required")?,
+                _ => info!("Unknown option name {} was provided", opt.name),
+            }
+        }
+        Ok(())
     }
 }

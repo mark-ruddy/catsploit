@@ -12,12 +12,6 @@ use catsploit_lib::{
 mod cmd;
 mod handler;
 
-/// CliOpt holds a value assigned by the user to a library option
-pub struct CliOpt {
-    pub opt: Opt,
-    pub value: Option<String>,
-}
-
 pub struct UserInput {
     pub cmd: String,
     pub subcmd: Option<String>,
@@ -38,7 +32,7 @@ pub struct Cli {
     pub prompt: Option<String>,
     pub selected_module_kind: Option<Kind>,
     pub selected_module_path: Option<String>,
-    pub selected_module_cliopts: Option<Vec<CliOpt>>,
+    pub selected_module_opts: Option<Vec<Opt>>,
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
@@ -98,6 +92,7 @@ impl Cli {
             "show" => self.handle_show(input.subcmd)?,
             "info" => self.handle_info()?,
             "use" => self.handle_use(input.subcmd)?,
+            "run" => self.handle_run()?,
             "help" => self.handle_help(),
             "exit" => {
                 println!("Exiting...");

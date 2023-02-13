@@ -31,7 +31,7 @@ impl Cli {
         ]);
         exploit_table.printstd();
 
-        self.print_cliopts();
+        self.print_opts();
         Ok(())
     }
 
@@ -46,7 +46,7 @@ impl Cli {
         payload_table.add_row(row![info.descriptive_name, info.module_path, info.kind]);
         payload_table.printstd();
 
-        self.print_cliopts();
+        self.print_opts();
         Ok(())
     }
 }

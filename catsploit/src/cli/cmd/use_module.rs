@@ -19,7 +19,7 @@ impl Cli {
                 self.prompt = Some(exploit_info.module_path.clone());
                 self.selected_module_kind = Some(Kind::Exploit);
                 self.selected_module_path = Some(exploit_info.module_path.clone());
-                self.selected_module_cliopts = Some(Cli::parse_cliopts(exploit.opts()));
+                self.selected_module_opts = Some(exploit.opts());
 
                 self.exploit = Some(exploit);
                 self.exploit_info = Some(exploit_info);
@@ -47,7 +47,7 @@ impl Cli {
                 self.prompt = Some(payload_info.module_path.clone());
                 self.selected_module_kind = Some(Kind::Payload);
                 self.selected_module_path = Some(payload_info.module_path.clone());
-                self.selected_module_cliopts = Some(Cli::parse_cliopts(payload.opts()));
+                self.selected_module_opts = Some(payload.opts());
 
                 self.payload = Some(payload);
                 self.payload_info = Some(payload_info);

@@ -5,12 +5,17 @@ use catsploit_lib::module::Kind;
 use crate::cli::Cli;
 
 impl Cli {
-    pub fn run(&self) -> Result<(), Box<dyn Error>> {
+    pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
-                Kind::Exploit => match &self.exploit {
+                Kind::Exploit => match &mut self.exploit {
                     Some(exploit) => {
-                        // TODO: Need a way to map the Vec<CliOpt> values into the concrete underlying object(e.g. Vsftpd234Backdoor) that implements Exploit - not easy
+                        // Apply the options set in the CLI and then run the exploit
+                        exploit.apply_opts(
+                            self.selected_module_opts
+                                .clone()
+                                .ok_or("No module options set to apply to exploit")?,
+                        )?;
                         exploit.exploit()?;
                     }
                     None => return Err("Exploit module is not set correctly".into()),

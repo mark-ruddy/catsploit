@@ -57,12 +57,10 @@ impl Cli {
             Some(subcmd) => {
                 let parsed_module_path = self.parse_module_path(&subcmd)?;
                 match parsed_module_path.kind.as_str() {
-                    "exploit" => {
-                        self.use_exploit(&subcmd)?;
-                    }
-                    "payload" => {
-                        self.use_payload(&subcmd)?;
-                    }
+                    "exploit" => self.use_exploit(&subcmd)?,
+                    "payload" => self.use_payload(&subcmd)?,
+                    "options" => self.print_opts(),
+                    "opts" => self.print_opts(),
                     _ => (),
                 }
             }
@@ -71,8 +69,9 @@ impl Cli {
         Ok(())
     }
 
-    pub fn handle_run(&self) -> Result<(), Box<dyn Error>> {
-        // TODO: execute exploit here
+    pub fn handle_run(&mut self) -> Result<(), Box<dyn Error>> {
+        // NOTE: module matching logic is kept in run.rs due to not being able to have multiple mutable self references, may need to look into this more
+        self.run()?;
         Ok(())
     }
 
