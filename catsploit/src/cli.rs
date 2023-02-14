@@ -36,6 +36,7 @@ pub struct Cli {
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
+    pub exploit_payload: Option<Box<dyn Payload>>,
 
     pub payload: Option<Box<dyn Payload>>,
     pub payload_info: Option<payload::Info>,
