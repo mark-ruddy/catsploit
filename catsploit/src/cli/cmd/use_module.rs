@@ -25,11 +25,7 @@ impl Cli {
                 self.exploit_info = Some(exploit_info);
                 Ok(())
             }
-            None => {
-                return Err(
-                    format!("No exploit found with the module path '{}'", module_path).into(),
-                )
-            }
+            None => Err(format!("No exploit found with the module path '{}'", module_path).into()),
         }
     }
 
@@ -53,11 +49,7 @@ impl Cli {
                 self.payload_info = Some(payload_info);
                 Ok(())
             }
-            None => {
-                return Err(
-                    format!("No payload found with the module path '{}'", module_path).into(),
-                )
-            }
+            None => Err(format!("No payload found with the module path '{}'", module_path).into()),
         }
     }
 }

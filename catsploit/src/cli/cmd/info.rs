@@ -32,6 +32,14 @@ impl Cli {
         exploit_table.printstd();
 
         self.print_opts();
+
+        match &self.exploit_payload {
+            Some(exploit_payload) => println!(
+                "Selected Payload: {}",
+                exploit_payload.info().descriptive_name
+            ),
+            None => (),
+        }
         Ok(())
     }
 

@@ -75,12 +75,18 @@ impl Cli {
         args: Option<Vec<String>>,
     ) -> Result<(), Box<dyn Error>> {
         const MISSING_VALUE: &str = "Missing value argument";
-        let opt_name = subcmd.ok_or("Missing option name argument")?;
+        let subcmd = subcmd.ok_or("Missing option name argument")?;
         let args = args.ok_or(MISSING_VALUE)?;
         if args.len() < 1 {
             return Err(MISSING_VALUE.into());
         }
-        self.set(&opt_name, &args[0])?;
+
+        // special case for "set payload"
+        if subcmd == "payload" {
+            self.set_payload(&args[0])?;
+        }
+
+        self.set_opt(&subcmd, &args[0])?;
         Ok(())
     }
 
