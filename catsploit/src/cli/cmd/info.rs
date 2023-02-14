@@ -1,19 +1,12 @@
+use catsploit_lib::core::{exploit, payload};
 use prettytable::Table;
 use std::error::Error;
 
 use crate::cli::Cli;
 
-const NO_INFO: &str = "No module info loaded";
-
-// TODO: need a consistent way to print tabled data without borders
-
 impl Cli {
-    pub fn print_exploit(&self) -> Result<(), Box<dyn Error>> {
-        let info = match &self.exploit_info {
-            Some(info) => info,
-            None => return Err(NO_INFO.into()),
-        };
-
+    pub fn print_exploit(&self, info: &exploit::Info) -> Result<(), Box<dyn Error>> {
+        // let info = info.ok_or(NO_INFO)?;
         let mut exploit_table = Table::new();
         exploit_table.add_row(row![
             "Name",
@@ -43,12 +36,8 @@ impl Cli {
         Ok(())
     }
 
-    pub fn print_payload(&self) -> Result<(), Box<dyn Error>> {
-        let info = match &self.payload_info {
-            Some(info) => info,
-            None => return Err(NO_INFO.into()),
-        };
-
+    pub fn print_payload(&self, info: &payload::Info) -> Result<(), Box<dyn Error>> {
+        // let info = info.ok_or(NO_INFO)?;
         let mut payload_table = Table::new();
         payload_table.add_row(row!["Name", "Module Path", "Kind"]);
         payload_table.add_row(row![info.descriptive_name, info.module_path, info.kind]);

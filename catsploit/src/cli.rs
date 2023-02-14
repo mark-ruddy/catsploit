@@ -107,7 +107,7 @@ impl Cli {
     pub fn handle_input(&mut self, input: UserInput) -> Result<(), Box<dyn Error>> {
         match input.cmd.as_str() {
             "show" => self.handle_show(input.subcmd)?,
-            "info" => self.handle_info()?,
+            "info" => self.handle_info(input.subcmd)?,
             "use" => self.handle_use(input.subcmd)?,
             "set" => self.handle_set(input.subcmd, input.args)?,
             "run" => self.handle_run()?,
