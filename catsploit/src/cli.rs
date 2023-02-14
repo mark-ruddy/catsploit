@@ -15,7 +15,7 @@ mod handler;
 pub struct UserInput {
     pub cmd: String,
     pub subcmd: Option<String>,
-    pub args: Option<String>,
+    pub args: Option<Vec<String>>,
 }
 
 impl Default for UserInput {
@@ -58,7 +58,7 @@ impl Cli {
         io::stdin().read_line(&mut input)?;
         input = input.trim().to_string();
         let split = input.split(" ");
-        let split_vec: Vec<&str> = split.collect();
+        let split_vec: Vec<String> = split.map(|s| s.to_string()).collect();
 
         let mut user_input = UserInput::default();
         match split_vec.get(0) {
@@ -82,8 +82,13 @@ impl Cli {
             }
         }
         let args_vec = &split_vec[2..];
+        let args_vec = args_vec.to_vec();
 
-        user_input.args = Some(args_vec.join(" "));
+        if args_vec.len() > 0 {
+            user_input.args = Some(args_vec);
+        } else {
+            user_input.args = None;
+        }
         Ok(user_input)
     }
 
@@ -92,6 +97,7 @@ impl Cli {
             "show" => self.handle_show(input.subcmd)?,
             "info" => self.handle_info()?,
             "use" => self.handle_use(input.subcmd)?,
+            "set" => self.handle_set(input.subcmd, input.args)?,
             "run" => self.handle_run()?,
             "help" => self.handle_help(),
             "exit" => {

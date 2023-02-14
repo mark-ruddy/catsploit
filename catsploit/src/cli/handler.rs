@@ -69,8 +69,22 @@ impl Cli {
         Ok(())
     }
 
+    pub fn handle_set(
+        &mut self,
+        subcmd: Option<String>,
+        args: Option<Vec<String>>,
+    ) -> Result<(), Box<dyn Error>> {
+        const MISSING_VALUE: &str = "Missing value argument";
+        let opt_name = subcmd.ok_or("Missing option name argument")?;
+        let args = args.ok_or(MISSING_VALUE)?;
+        if args.len() < 1 {
+            return Err(MISSING_VALUE.into());
+        }
+        self.set(&opt_name, &args[0])?;
+        Ok(())
+    }
+
     pub fn handle_run(&mut self) -> Result<(), Box<dyn Error>> {
-        // NOTE: module matching logic is kept in run.rs due to not being able to have multiple mutable self references, may need to look into this more
         self.run()?;
         Ok(())
     }
