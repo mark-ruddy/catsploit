@@ -4,6 +4,7 @@ use cli::Cli;
 use std::{error::Error, io, io::Write};
 
 mod cli;
+mod defaults;
 
 const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
 
@@ -11,6 +12,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 
     // TODO: basic CLI interface, lets just code, can refactor later
+
     let mut cli = Cli {
         prompt: None,
         selected_module_kind: None,
@@ -19,6 +21,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         exploit: None,
         exploit_info: None,
+        exploit_payload: Some(defaults::payload()),
 
         payload: None,
         payload_info: None,
