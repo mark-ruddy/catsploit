@@ -15,7 +15,7 @@ mod handler;
 pub struct UserInput {
     pub cmd: String,
     pub subcmd: Option<String>,
-    pub args: Option<String>,
+    pub args: Option<Vec<String>>,
 }
 
 impl Default for UserInput {
@@ -36,6 +36,7 @@ pub struct Cli {
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
+    pub exploit_payload: Option<Box<dyn Payload>>,
 
     pub payload: Option<Box<dyn Payload>>,
     pub payload_info: Option<payload::Info>,
@@ -43,7 +44,18 @@ pub struct Cli {
 
 impl Cli {
     pub fn print_banner(&self) {
-        println!("---- CATSPLOIT ----");
+        println!(
+            r#"
+ ________  ________  _________  ________  ________  ___       ________  ___  _________   
+|\   ____\|\   __  \|\___   ___\\   ____\|\   __  \|\  \     |\   __  \|\  \|\___   ___\ 
+\ \  \___|\ \  \|\  \|___ \  \_\ \  \___|\ \  \|\  \ \  \    \ \  \|\  \ \  \|___ \  \_| 
+ \ \  \    \ \   __  \   \ \  \ \ \_____  \ \   ____\ \  \    \ \  \\\  \ \  \   \ \  \  
+  \ \  \____\ \  \ \  \   \ \  \ \|____|\  \ \  \___|\ \  \____\ \  \\\  \ \  \   \ \  \ 
+   \ \_______\ \__\ \__\   \ \__\  ____\_\  \ \__\    \ \_______\ \_______\ \__\   \ \__\
+    \|_______|\|__|\|__|    \|__| |\_________\|__|     \|_______|\|_______|\|__|    \|__|
+                                  \|_________|                                           
+            "#
+        )
     }
 
     pub fn print_prompt(&self) {
@@ -58,7 +70,7 @@ impl Cli {
         io::stdin().read_line(&mut input)?;
         input = input.trim().to_string();
         let split = input.split(" ");
-        let split_vec: Vec<&str> = split.collect();
+        let split_vec: Vec<String> = split.map(|s| s.to_string()).collect();
 
         let mut user_input = UserInput::default();
         match split_vec.get(0) {
@@ -82,16 +94,22 @@ impl Cli {
             }
         }
         let args_vec = &split_vec[2..];
+        let args_vec = args_vec.to_vec();
 
-        user_input.args = Some(args_vec.join(" "));
+        if args_vec.len() > 0 {
+            user_input.args = Some(args_vec);
+        } else {
+            user_input.args = None;
+        }
         Ok(user_input)
     }
 
     pub fn handle_input(&mut self, input: UserInput) -> Result<(), Box<dyn Error>> {
         match input.cmd.as_str() {
             "show" => self.handle_show(input.subcmd)?,
-            "info" => self.handle_info()?,
+            "info" => self.handle_info(input.subcmd)?,
             "use" => self.handle_use(input.subcmd)?,
+            "set" => self.handle_set(input.subcmd, input.args)?,
             "run" => self.handle_run()?,
             "help" => self.handle_help(),
             "exit" => {
