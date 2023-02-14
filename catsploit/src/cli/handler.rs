@@ -1,4 +1,7 @@
-use super::Cli;
+use super::{
+    cmd::use_module::{find_exploit, find_payload},
+    Cli,
+};
 use crate::MODULE_KINDS;
 use catsploit_lib::module::Kind;
 use std::error::Error;
@@ -6,7 +9,7 @@ use std::error::Error;
 const NO_SUBCMD: &str = "This command requires an argument";
 
 struct ParsedModulePath {
-    kind: String,
+    kind: Kind,
 }
 
 // TODO: For now just assuming that the subcmd is the module path, need to implement selecting by number but that requires "search" to be implemented and history
@@ -22,9 +25,13 @@ impl Cli {
         if !MODULE_KINDS.contains(kind) {
             return Err(format!("Unknown module kind '{}' in module path", kind).into());
         }
-        Ok(ParsedModulePath {
-            kind: kind.to_string(),
-        })
+        let kind_enum = match *kind {
+            "exploit" => Kind::Exploit,
+            "payload" => Kind::Payload,
+            "auxiliary" => Kind::Auxiliary,
+            _ => return Err("Unknown kind in module path".into()),
+        };
+        Ok(ParsedModulePath { kind: kind_enum })
     }
 
     pub fn handle_show(&self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
@@ -40,11 +47,40 @@ impl Cli {
         Ok(())
     }
 
-    pub fn handle_info(&self) -> Result<(), Box<dyn Error>> {
+    pub fn handle_info(&self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
+        match subcmd {
+            Some(module_path) => {
+                let parsed_module_path = self.parse_module_path(&module_path)?;
+                match parsed_module_path.kind {
+                    Kind::Exploit => {
+                        let exploit = find_exploit(&module_path)
+                            .ok_or("No exploit exists at module...TODO duplicate error messages")?;
+                        self.print_exploit(&exploit.info())?;
+                    }
+                    Kind::Payload => {
+                        let payload =
+                            find_payload(&module_path).ok_or("No payload exists at module...")?;
+                        self.print_payload(&payload.info())?;
+                    }
+                    Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+                }
+                return Ok(());
+            }
+            None => (),
+        }
+
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
-                Kind::Exploit => self.print_exploit()?,
-                Kind::Payload => self.print_payload()?,
+                Kind::Exploit => self.print_exploit(
+                    self.exploit_info
+                        .as_ref()
+                        .ok_or("No selected exploit module to display info on")?,
+                )?,
+                Kind::Payload => self.print_payload(
+                    self.payload_info
+                        .as_ref()
+                        .ok_or("No selected payload module to display info on")?,
+                )?,
                 Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             },
             None => return Err("Info requires a module to be selected".into()),
@@ -56,12 +92,10 @@ impl Cli {
         match subcmd {
             Some(subcmd) => {
                 let parsed_module_path = self.parse_module_path(&subcmd)?;
-                match parsed_module_path.kind.as_str() {
-                    "exploit" => self.use_exploit(&subcmd)?,
-                    "payload" => self.use_payload(&subcmd)?,
-                    "options" => self.print_opts(),
-                    "opts" => self.print_opts(),
-                    _ => (),
+                match parsed_module_path.kind {
+                    Kind::Exploit => self.use_exploit(&subcmd)?,
+                    Kind::Payload => self.use_payload(&subcmd)?,
+                    Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
                 }
             }
             None => return Err(NO_SUBCMD.into()),
@@ -75,12 +109,19 @@ impl Cli {
         args: Option<Vec<String>>,
     ) -> Result<(), Box<dyn Error>> {
         const MISSING_VALUE: &str = "Missing value argument";
-        let opt_name = subcmd.ok_or("Missing option name argument")?;
+        let subcmd = subcmd.ok_or("Missing option name argument")?;
         let args = args.ok_or(MISSING_VALUE)?;
         if args.len() < 1 {
             return Err(MISSING_VALUE.into());
         }
-        self.set(&opt_name, &args[0])?;
+
+        // special case for "set payload"
+        if subcmd == "payload" {
+            self.set_payload(&args[0])?;
+            return Ok(());
+        }
+
+        self.set_opt(&subcmd, &args[0])?;
         Ok(())
     }
 

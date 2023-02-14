@@ -4,15 +4,31 @@ use std::error::Error;
 
 use crate::cli::Cli;
 
+pub fn find_exploit(module_path: &str) -> Option<Box<dyn Exploit>> {
+    let exploits = index::exploits();
+    let mut selected_exploit: Option<Box<dyn Exploit>> = None;
+    for exploit in exploits {
+        if exploit.info().module_path == module_path {
+            selected_exploit = Some(exploit);
+        }
+    }
+    selected_exploit
+}
+
+pub fn find_payload(module_path: &str) -> Option<Box<dyn Payload>> {
+    let payloads = index::payloads();
+    let mut selected_payload: Option<Box<dyn Payload>> = None;
+    for payload in payloads {
+        if payload.info().module_path == module_path {
+            selected_payload = Some(payload);
+        }
+    }
+    selected_payload
+}
+
 impl Cli {
     pub fn use_exploit(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
-        let exploits = index::exploits();
-        let mut selected_exploit: Option<Box<dyn Exploit>> = None;
-        for exploit in exploits {
-            if exploit.info().module_path == module_path {
-                selected_exploit = Some(exploit);
-            }
-        }
+        let selected_exploit = find_exploit(module_path);
         match selected_exploit {
             Some(exploit) => {
                 let exploit_info = exploit.info();
@@ -25,22 +41,12 @@ impl Cli {
                 self.exploit_info = Some(exploit_info);
                 Ok(())
             }
-            None => {
-                return Err(
-                    format!("No exploit found with the module path '{}'", module_path).into(),
-                )
-            }
+            None => Err(format!("No exploit found with the module path '{}'", module_path).into()),
         }
     }
 
     pub fn use_payload(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
-        let payloads = index::payloads();
-        let mut selected_payload: Option<Box<dyn Payload>> = None;
-        for payload in payloads {
-            if payload.info().module_path == module_path {
-                selected_payload = Some(payload);
-            }
-        }
+        let selected_payload = find_payload(module_path);
         match selected_payload {
             Some(payload) => {
                 let payload_info = payload.info();
@@ -53,11 +59,7 @@ impl Cli {
                 self.payload_info = Some(payload_info);
                 Ok(())
             }
-            None => {
-                return Err(
-                    format!("No payload found with the module path '{}'", module_path).into(),
-                )
-            }
+            None => Err(format!("No payload found with the module path '{}'", module_path).into()),
         }
     }
 }

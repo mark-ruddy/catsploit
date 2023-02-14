@@ -36,6 +36,7 @@ pub struct Cli {
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
+    pub exploit_payload: Option<Box<dyn Payload>>,
 
     pub payload: Option<Box<dyn Payload>>,
     pub payload_info: Option<payload::Info>,
@@ -43,7 +44,18 @@ pub struct Cli {
 
 impl Cli {
     pub fn print_banner(&self) {
-        println!("---- CATSPLOIT ----");
+        println!(
+            r#"
+ ________  ________  _________  ________  ________  ___       ________  ___  _________   
+|\   ____\|\   __  \|\___   ___\\   ____\|\   __  \|\  \     |\   __  \|\  \|\___   ___\ 
+\ \  \___|\ \  \|\  \|___ \  \_\ \  \___|\ \  \|\  \ \  \    \ \  \|\  \ \  \|___ \  \_| 
+ \ \  \    \ \   __  \   \ \  \ \ \_____  \ \   ____\ \  \    \ \  \\\  \ \  \   \ \  \  
+  \ \  \____\ \  \ \  \   \ \  \ \|____|\  \ \  \___|\ \  \____\ \  \\\  \ \  \   \ \  \ 
+   \ \_______\ \__\ \__\   \ \__\  ____\_\  \ \__\    \ \_______\ \_______\ \__\   \ \__\
+    \|_______|\|__|\|__|    \|__| |\_________\|__|     \|_______|\|_______|\|__|    \|__|
+                                  \|_________|                                           
+            "#
+        )
     }
 
     pub fn print_prompt(&self) {
@@ -95,7 +107,7 @@ impl Cli {
     pub fn handle_input(&mut self, input: UserInput) -> Result<(), Box<dyn Error>> {
         match input.cmd.as_str() {
             "show" => self.handle_show(input.subcmd)?,
-            "info" => self.handle_info()?,
+            "info" => self.handle_info(input.subcmd)?,
             "use" => self.handle_use(input.subcmd)?,
             "set" => self.handle_set(input.subcmd, input.args)?,
             "run" => self.handle_run()?,
