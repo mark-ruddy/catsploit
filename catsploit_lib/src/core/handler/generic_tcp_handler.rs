@@ -23,6 +23,10 @@ impl GenericTcpHandler {
 
     pub fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
         // TODO: need timeout here while accepting
+        info!(
+            "Listening for one connection on: {}",
+            self.listener.local_addr()?
+        );
         let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
         thread::spawn(move || match Self::open_shell(stream) {
@@ -37,6 +41,7 @@ impl GenericTcpHandler {
     pub fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         loop {
             let mut cmd = String::new();
+            print!("shell_input> ");
             io::stdin().read_line(&mut cmd)?;
             if cmd == "catsploit_handler_exit" {
                 break;
