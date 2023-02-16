@@ -4,7 +4,7 @@ use crate::core::{
     payload::{reverse::Reverse, Info, Payload},
 };
 use log::info;
-use std::{error::Error, thread};
+use std::error::Error;
 
 pub struct RubyReverseTcp {
     pub reverse: Reverse,
@@ -19,10 +19,8 @@ impl Payload for RubyReverseTcp {
 
     fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {
         let mut handler = GenericTcpHandler::new(&self.reverse.lhost, &self.reverse.lport)?;
-        thread::spawn(move || {
-            // TODO: how to propogate Result here?
-            handler.listen_for_one().unwrap();
-        });
+        // TODO: how to propogate Result here?
+        handler.listen_for_one().unwrap();
         Ok(())
     }
 

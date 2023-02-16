@@ -29,7 +29,7 @@ impl GenericTcpHandler {
         );
         let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
-        thread::spawn(move || match Self::open_shell(stream) {
+        thread::spawn(|| match Self::open_shell(stream) {
             Ok(_) => (),
             Err(e) => {
                 warn!("TCP handler hit error with open shell: {}", e);
