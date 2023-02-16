@@ -24,11 +24,9 @@ impl Cli {
                         */
                         exploit.exploit(
                             // TODO: why is as_ref needed here vs using &self?
-                            /* dyn_clone::clone_box(exploit_payload),
                             self.exploit_payload
+                                .as_ref()
                                 .ok_or("A payload must be defined to run exploit")?,
-                            */
-                            &self.exploit_payload,
                         )?;
                     }
                     None => return Err("Exploit module is not set correctly".into()),

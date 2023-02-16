@@ -65,3 +65,5 @@ pub trait Payload: DynClone {
 
     fn apply_opts(&mut self, opts: Vec<Opt>) -> Result<(), Box<dyn Error>>;
 }
+
+dyn_clone::clone_trait_object!(Payload);
