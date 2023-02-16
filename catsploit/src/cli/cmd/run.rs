@@ -16,11 +16,19 @@ impl Cli {
                                 .clone()
                                 .ok_or("No module options set to apply to exploit")?,
                         )?;
+                        /*
+                        let exploit_payload = match self.exploit_payload {
+                            Some(exploit_payload) => exploit_payload,
+                            None => return Err("A payload must be defined to run exploit")?,
+                        };
+                        */
                         exploit.exploit(
                             // TODO: why is as_ref needed here vs using &self?
+                            /* dyn_clone::clone_box(exploit_payload),
                             self.exploit_payload
-                                .as_ref()
                                 .ok_or("A payload must be defined to run exploit")?,
+                            */
+                            &self.exploit_payload,
                         )?;
                     }
                     None => return Err("Exploit module is not set correctly".into()),

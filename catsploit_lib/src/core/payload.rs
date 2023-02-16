@@ -1,3 +1,5 @@
+use async_trait::async_trait;
+use dyn_clone::DynClone;
 use std::{error::Error, fmt};
 
 use super::opt::Opt;
@@ -28,7 +30,8 @@ pub struct Info {
 }
 
 // TODO: need a way for exploits to pick a default payload, similarly exploits need to be searchable etc too.
-pub trait Payload {
+#[async_trait]
+pub trait Payload: DynClone {
     fn default() -> Self
     where
         Self: Sized;
@@ -41,9 +44,7 @@ pub trait Payload {
 
     /// Payloads may need to carry out a task before executing
     /// Revshells for example may use a pretask to start the listener on the attacking machine
-    fn pretask(&self) -> Result<(), Box<dyn Error>> {
-        Ok(())
-    }
+    async fn pretask(&self) -> Result<(), Box<dyn Error>>;
 
     fn blob(&self) -> Vec<u8>;
 

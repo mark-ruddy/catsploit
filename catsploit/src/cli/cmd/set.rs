@@ -26,7 +26,7 @@ impl Cli {
     pub fn set_payload(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
         // TODO: code adapted from use_module.rs, maybe some can be extracted to fn
         let payloads = index::payloads();
-        let mut selected_payload: Option<Box<dyn Payload>> = None;
+        let mut selected_payload: Option<Box<dyn Payload + Send + Sync>> = None;
         for payload in payloads {
             if payload.info().module_path == module_path {
                 selected_payload = Some(payload);

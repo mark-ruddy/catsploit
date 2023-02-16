@@ -3,42 +3,37 @@
 // Single client should be accepted, don't see any reason to want multiple clients for a revshell
 // Need to be able to attach the servers I/O to the terminal too, that logic maybe can be implemented in handler.rs
 
-use log::{info, warn};
+use log::info;
 use std::error::Error;
 use std::io;
-use std::io::Read;
-use std::io::Write;
-use std::net::{TcpListener, TcpStream};
-use std::thread;
+use tokio::{
+    io::{AsyncReadExt, AsyncWriteExt},
+    net::{TcpListener, TcpStream},
+};
 
 pub struct GenericTcpHandler {
     pub listener: TcpListener,
 }
 
 impl GenericTcpHandler {
-    pub fn new(address: &str, port: &str) -> Result<Self, Box<dyn Error>> {
-        let listener = TcpListener::bind(format!("{}:{}", address, port))?;
+    pub async fn new(address: &str, port: &str) -> Result<Self, Box<dyn Error>> {
+        let listener = TcpListener::bind(format!("{}:{}", address, port)).await?;
         Ok(Self { listener })
     }
 
-    pub fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
+    pub async fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
         // TODO: need timeout here while accepting
         info!(
             "Listening for one connection on: {}",
             self.listener.local_addr()?
         );
-        let (stream, peer_addr) = self.listener.accept()?;
+        let (stream, peer_addr) = self.listener.accept().await?;
         info!("Received handler connection from: {}", peer_addr);
-        thread::spawn(|| match Self::open_shell(stream) {
-            Ok(_) => (),
-            Err(e) => {
-                warn!("TCP handler hit error with open shell: {}", e);
-            }
-        });
+        Self::open_shell(stream).await?;
         Ok(())
     }
 
-    pub fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
+    pub async fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         loop {
             let mut cmd = String::new();
             print!("shell_input> ");
@@ -46,10 +41,10 @@ impl GenericTcpHandler {
             if cmd == "catsploit_handler_exit" {
                 break;
             }
-            stream.write(cmd.as_bytes())?;
+            stream.write(cmd.as_bytes()).await?;
 
             let mut out = String::new();
-            stream.read_to_string(&mut out)?;
+            stream.read_to_string(&mut out).await?;
             print!("{}", out);
         }
         Ok(())

@@ -12,6 +12,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-trait"
+version = "0.1.64"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1cd7fce9ba8c3c042128ce72d8b2ddbf3a05747efb67ea0313c635e10bda47a2"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "autocfg"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -46,6 +57,7 @@ name = "catsploit"
 version = "0.1.0"
 dependencies = [
  "catsploit_lib",
+ "dyn-clone",
  "env_logger",
  "log",
  "prettytable-rs",
@@ -56,6 +68,8 @@ dependencies = [
 name = "catsploit_lib"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
+ "dyn-clone",
  "log",
  "rand",
  "tokio",
@@ -115,6 +129,12 @@ dependencies = [
  "redox_users",
  "winapi",
 ]
+
+[[package]]
+name = "dyn-clone"
+version = "1.0.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9b0705efd4599c15a38151f4721f7bc388306f61084d3bfd50bd07fbca5cb60"
 
 [[package]]
 name = "encode_unicode"
