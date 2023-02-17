@@ -6,8 +6,8 @@
 use log::info;
 use std::error::Error;
 use std::io;
-use tokio::{
-    io::{AsyncReadExt, AsyncWriteExt},
+use std::{
+    io::{Read, Write},
     net::{TcpListener, TcpStream},
 };
 
@@ -16,24 +16,24 @@ pub struct GenericTcpHandler {
 }
 
 impl GenericTcpHandler {
-    pub async fn new(address: &str, port: &str) -> Result<Self, Box<dyn Error>> {
-        let listener = TcpListener::bind(format!("{}:{}", address, port)).await?;
+    pub fn new(address: &str, port: &str) -> Result<Self, Box<dyn Error>> {
+        let listener = TcpListener::bind(format!("{}:{}", address, port))?;
         Ok(Self { listener })
     }
 
-    pub async fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
         // TODO: need timeout here while accepting
         info!(
             "Listening for one connection on: {}",
             self.listener.local_addr()?
         );
-        let (stream, peer_addr) = self.listener.accept().await?;
+        let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
-        Self::open_shell(stream).await?;
+        Self::open_shell(stream)?;
         Ok(())
     }
 
-    pub async fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
+    pub fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
         loop {
             let mut cmd = String::new();
             print!("shell_input> ");
@@ -41,10 +41,10 @@ impl GenericTcpHandler {
             if cmd == "catsploit_handler_exit" {
                 break;
             }
-            stream.write(cmd.as_bytes()).await?;
+            stream.write(cmd.as_bytes())?;
 
             let mut out = String::new();
-            stream.read_to_string(&mut out).await?;
+            stream.read_to_string(&mut out)?;
             print!("{}", out);
         }
         Ok(())
