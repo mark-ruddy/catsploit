@@ -15,9 +15,9 @@ pub fn find_exploit(module_path: &str) -> Option<Box<dyn Exploit>> {
     selected_exploit
 }
 
-pub fn find_payload(module_path: &str) -> Option<Box<dyn Payload>> {
+pub fn find_payload(module_path: &str) -> Option<Box<dyn Payload + Send + Sync>> {
     let payloads = index::payloads();
-    let mut selected_payload: Option<Box<dyn Payload>> = None;
+    let mut selected_payload: Option<Box<dyn Payload + Send + Sync>> = None;
     for payload in payloads {
         if payload.info().module_path == module_path {
             selected_payload = Some(payload);

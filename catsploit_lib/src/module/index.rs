@@ -10,8 +10,8 @@ pub fn exploits() -> Vec<Box<dyn Exploit>> {
     exploits
 }
 
-pub fn payloads() -> Vec<Box<dyn Payload>> {
-    let mut payloads: Vec<Box<dyn Payload>> = Vec::new();
+pub fn payloads() -> Vec<Box<dyn Payload + Send + Sync>> {
+    let mut payloads: Vec<Box<dyn Payload + Send + Sync>> = Vec::new();
     payloads.push(Box::new(RubyReverseTcp::default()));
     payloads
 }

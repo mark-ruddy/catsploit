@@ -10,4 +10,6 @@ catsploit_lib = { path = "../catsploit_lib" }
 log = "0.4.17"
 env_logger = "0.10.0"
 prettytable-rs = "0.10.0"
-tokio = { version = "1.25.0", features = ["full"] }
+
+# TODO: matching todo in library Cargo.toml
+dyn-clone = "1.0.10"

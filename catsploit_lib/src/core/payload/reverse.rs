@@ -1,5 +1,6 @@
 use crate::core::opt::Opt;
 
+#[derive(Clone)]
 pub struct Reverse {
     pub lhost: String,
     pub lport: String,
