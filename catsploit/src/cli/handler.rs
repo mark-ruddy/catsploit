@@ -128,7 +128,7 @@ impl Cli {
     pub fn handle_run(&mut self) -> Result<(), Box<dyn Error>> {
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
-                Kind::Exploit => self.run_exploit(),
+                Kind::Exploit => self.run_exploit()?,
                 _ => return Err("Run is supported for 'exploit' modules only".into()),
             },
             None => return Err("Module kind is not set".into()),

@@ -1,4 +1,3 @@
-use catsploit_lib::core::opt::Opt;
 use prettytable::Table;
 use std::error::Error;
 

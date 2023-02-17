@@ -67,7 +67,10 @@ impl Payload for RubyReverseTcp {
         for opt in opts {
             match opt.name.as_str() {
                 // TODO: Need solution so code below is not duplicated for another module which uses Reverse
-                "LHOST" => self.reverse.lhost = opt.value.ok_or("LHOST option is required")?,
+                "LHOST" => {
+                    let lhost = opt.value.ok_or("LHOST option is required")?;
+                    self.reverse.lhost = lhost;
+                }
                 "LPORT" => self.reverse.lport = opt.value.ok_or("LPORT option is required")?,
                 _ => info!("Unknown option name {} was provided", opt.name),
             }

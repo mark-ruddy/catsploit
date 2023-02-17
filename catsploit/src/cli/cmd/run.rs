@@ -1,3 +1,4 @@
+use log::info;
 use std::error::Error;
 
 use crate::cli::Cli;
@@ -21,13 +22,20 @@ impl Cli {
                 Some(previous_module_opts) => {
                     exploit_payload.apply_opts(previous_module_opts.clone())?;
                 }
-                None => exploit_payload.apply_opts(exploit_payload.opts())?,
+                None => {
+                    exploit_payload.apply_opts(exploit_payload.opts())?;
+                }
             };
+            println!(
+                "IN LIBRARY AFTER APPLYING OPTS TO CLONED PAYLOAD: {}",
+                exploit_payload.blob_to_string()?
+            );
 
             exploit.exploit(
-                // TODO: why is as_ref needed here vs using &self?
+                // TODO: another clone here may be avoidable
+                // previously used as_ref() and exploit accepted a &Payload, but it lost its mutated state from the applied module options
                 self.exploit_payload
-                    .as_ref()
+                    .clone()
                     .ok_or("A payload must be defined to run exploit")?,
             )?;
         }

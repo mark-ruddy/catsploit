@@ -36,9 +36,10 @@ impl Cli {
                 self.selected_module_kind = Some(Kind::Exploit);
                 self.selected_module_path = Some(exploit_info.module_path.clone());
 
-                match self.get_previous_module_opts(module_path) {
+                // TODO: below code block is near duplicated in use_payload, might be acceptable in this case
+                match self.previous_module_opts.get(module_path) {
                     Some(previous_module_opts) => {
-                        self.selected_module_opts = Some(previous_module_opts)
+                        self.selected_module_opts = Some(previous_module_opts.clone())
                     }
                     None => self.selected_module_opts = Some(exploit.opts()),
                 }
@@ -60,9 +61,9 @@ impl Cli {
                 self.selected_module_kind = Some(Kind::Payload);
                 self.selected_module_path = Some(payload_info.module_path.clone());
 
-                match self.get_previous_module_opts(module_path) {
+                match self.previous_module_opts.get(module_path) {
                     Some(previous_module_opts) => {
-                        self.selected_module_opts = Some(previous_module_opts)
+                        self.selected_module_opts = Some(previous_module_opts.clone())
                     }
                     None => self.selected_module_opts = Some(payload.opts()),
                 }
