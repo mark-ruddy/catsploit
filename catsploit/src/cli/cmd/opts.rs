@@ -1,4 +1,6 @@
+use catsploit_lib::core::opt::Opt;
 use prettytable::Table;
+use std::error::Error;
 
 use crate::cli::Cli;
 
@@ -17,5 +19,17 @@ impl Cli {
             }
             None => (),
         }
+    }
+
+    pub fn update_previous_module_opts(&mut self) -> Result<(), Box<dyn Error>> {
+        self.previous_module_opts.insert(
+            self.selected_module_path
+                .clone()
+                .ok_or("No selected module path to get opts for")?,
+            self.selected_module_opts
+                .clone()
+                .ok_or("No selected module options to update with")?,
+        );
+        Ok(())
     }
 }

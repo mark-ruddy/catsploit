@@ -12,6 +12,8 @@ impl Cli {
                     if opt.name == opt_name {
                         opt.value = Some(value.to_string());
                         found = true;
+
+                        // TODO: update previous module opts here
                     }
                 }
             }
@@ -20,6 +22,7 @@ impl Cli {
         if !found {
             return Err(format!("No module option with name '{}' found", opt_name).into());
         }
+        self.update_previous_module_opts()?;
         Ok(())
     }
 

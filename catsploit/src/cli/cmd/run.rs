@@ -1,40 +1,35 @@
 use std::error::Error;
 
-use catsploit_lib::module::Kind;
-
 use crate::cli::Cli;
 
 impl Cli {
-    pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
-        match &self.selected_module_kind {
-            Some(selected_module_kind) => match selected_module_kind {
-                Kind::Exploit => match &mut self.exploit {
-                    Some(exploit) => {
-                        // Apply the options set in the CLI and then run the exploit
-                        exploit.apply_opts(
-                            self.selected_module_opts
-                                .clone()
-                                .ok_or("No module options set to apply to exploit")?,
-                        )?;
-                        /*
-                        let exploit_payload = match self.exploit_payload {
-                            Some(exploit_payload) => exploit_payload,
-                            None => return Err("A payload must be defined to run exploit")?,
-                        };
-                        */
-                        exploit.exploit(
-                            // TODO: why is as_ref needed here vs using &self?
-                            self.exploit_payload
-                                .as_ref()
-                                .ok_or("A payload must be defined to run exploit")?,
-                        )?;
-                    }
-                    None => return Err("Exploit module is not set correctly".into()),
-                },
-                // NOTE: payloads do not support run
-                _ => return Err("Run is supported for 'exploit' modules only".into()),
-            },
-            None => return Err("Module kind is not set".into()),
+    pub fn run_exploit(&mut self) -> Result<(), Box<dyn Error>> {
+        if let Some(exploit) = &mut self.exploit {
+            exploit.apply_opts(
+                self.selected_module_opts
+                    .clone()
+                    .ok_or("No module options set to apply to exploit")?,
+            )?;
+
+            let mut exploit_payload = self
+                .exploit_payload
+                .clone()
+                .ok_or("A payload must be defined to apply opts to")?;
+            let exploit_payload_module_path = exploit_payload.info().module_path;
+
+            match self.previous_module_opts.get(&exploit_payload_module_path) {
+                Some(previous_module_opts) => {
+                    exploit_payload.apply_opts(previous_module_opts.clone())?;
+                }
+                None => exploit_payload.apply_opts(exploit_payload.opts())?,
+            };
+
+            exploit.exploit(
+                // TODO: why is as_ref needed here vs using &self?
+                self.exploit_payload
+                    .as_ref()
+                    .ok_or("A payload must be defined to run exploit")?,
+            )?;
         }
         Ok(())
     }

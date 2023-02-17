@@ -1,4 +1,4 @@
-use std::{error::Error, io, process};
+use std::{collections::HashMap, error::Error, io, process};
 
 use catsploit_lib::{
     core::{
@@ -33,6 +33,7 @@ pub struct Cli {
     pub selected_module_kind: Option<Kind>,
     pub selected_module_path: Option<String>,
     pub selected_module_opts: Option<Vec<Opt>>,
+    pub previous_module_opts: HashMap<String, Vec<Opt>>,
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,

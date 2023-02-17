@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate prettytable;
 use cli::Cli;
-use std::{error::Error, io, io::Write};
+use std::{collections::HashMap, error::Error, io, io::Write};
 
 mod cli;
 mod defaults;
@@ -18,6 +18,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         selected_module_kind: None,
         selected_module_path: None,
         selected_module_opts: None,
+        previous_module_opts: HashMap::new(),
 
         exploit: None,
         exploit_info: None,
