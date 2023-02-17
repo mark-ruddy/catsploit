@@ -19,8 +19,7 @@ impl Payload for RubyReverseTcp {
     }
 
     fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {
-        let mut handler = GenericTcpHandler::new(&self.reverse.lhost, &self.reverse.lport)?;
-        // TODO: how to propogate Result here?
+        let mut handler = GenericTcpHandler::new("0.0.0.0", &self.reverse.lport)?;
         handler.listen_for_one()?;
         Ok(())
     }

@@ -1,4 +1,3 @@
-use log::info;
 use std::error::Error;
 
 use crate::cli::Cli;
@@ -31,13 +30,7 @@ impl Cli {
                 exploit_payload.blob_to_string()?
             );
 
-            exploit.exploit(
-                // TODO: another clone here may be avoidable
-                // previously used as_ref() and exploit accepted a &Payload, but it lost its mutated state from the applied module options
-                self.exploit_payload
-                    .clone()
-                    .ok_or("A payload must be defined to run exploit")?,
-            )?;
+            exploit.exploit(&exploit_payload)?;
         }
         Ok(())
     }
