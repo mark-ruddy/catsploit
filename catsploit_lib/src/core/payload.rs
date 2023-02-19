@@ -28,7 +28,20 @@ pub struct Info {
     pub platform: Option<Vec<String>>,
 }
 
-// TODO: need a way for exploits to pick a default payload, similarly exploits need to be searchable etc too.
+// TODO: need a better way to define whether a payload has pretask or not
+/// Run the pretask of any payload, will skip if the payload kind doesn't use pretask
+/// Revshells for example may use a pretask to start the listener on the attacking machine
+pub fn run_pretask(payload: Box<dyn Payload + Send + Sync>) -> Result<(), Box<dyn Error>> {
+    match payload.kind() {
+        Kind::ReverseShell => {
+            // TODO: how to propogate error
+            payload.pretask().unwrap();
+        }
+        _ => (),
+    }
+    Ok(())
+}
+
 pub trait Payload: DynClone {
     fn default() -> Self
     where
@@ -40,8 +53,6 @@ pub trait Payload: DynClone {
 
     fn info(&self) -> Info;
 
-    /// Payloads may need to carry out a task before executing
-    /// Revshells for example may use a pretask to start the listener on the attacking machine
     fn pretask(&self) -> Result<(), Box<dyn Error>>;
 
     fn blob(&self) -> Vec<u8>;
