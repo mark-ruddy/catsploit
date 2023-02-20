@@ -35,7 +35,7 @@ pub fn run_pretask(payload: Box<dyn Payload + Send + Sync>) -> Result<(), Box<dy
     match payload.kind() {
         Kind::ReverseShell => {
             // TODO: how to propogate error
-            payload.pretask().unwrap();
+            payload.pretask()?;
         }
         _ => (),
     }

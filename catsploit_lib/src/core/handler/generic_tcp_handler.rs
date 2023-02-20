@@ -1,14 +1,13 @@
-// TODO: I think what I want here is a generic TCP listener that can be launched just before a payload is sent over
-// The server itself probably needs to run in its own thread, so it doesn't block the rest of the library executing
-// Single client should be accepted, don't see any reason to want multiple clients for a revshell
-// Need to be able to attach the servers I/O to the terminal too, that logic maybe can be implemented in handler.rs
+const READ_POLLS: u64 = 3;
+const READ_POLL_SLEEP_MILLIS: u64 = 50;
 
 use log::info;
 use std::error::Error;
-use std::io::{self, BufRead, BufReader};
+use std::io::{BufRead, BufReader};
 use std::{
-    io::{Read, Write},
+    io::Write,
     net::{TcpListener, TcpStream},
+    time::Duration,
 };
 
 pub struct GenericTcpHandler {
@@ -29,49 +28,46 @@ impl GenericTcpHandler {
         );
         let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
-        Self::open_shell(stream)?;
+        let stream_buf = BufReader::new(stream.try_clone()?);
+        Self::open_shell(stream, stream_buf)?;
         Ok(())
     }
 
-    pub fn open_shell(mut stream: TcpStream) -> Result<(), Box<dyn Error>> {
-        let mut buffer = [0; 1024];
+    pub fn open_shell(
+        mut stream: TcpStream,
+        mut stream_buf: BufReader<TcpStream>,
+    ) -> Result<(), Box<dyn Error>> {
+        stream.set_nonblocking(true)?;
         loop {
-            // TODO: work in progress, trying to emulate nc -lvnp
-            /*
-            let mut cmd = String::new();
-            io::stdin().read_line(&mut cmd)?;
-            if cmd == "catsploit_handler_exit" {
-                break;
-            }
-            println!("Got cmd, trying to write to stream: {}", cmd);
-            stream.write(cmd.as_bytes())?;
-            println!("written to stream");
-
-            let mut out = String::new();
-            stream_buf.read(&mut out)?;
-            print!("{}", out);
-            io::stdout().flush()?;
-            */
             print!("> ");
-            std::io::stdout().flush().unwrap();
+            std::io::stdout().flush()?;
             let mut input = String::new();
-            std::io::stdin().read_line(&mut input).unwrap();
-            stream.write_all(input.trim().as_bytes()).unwrap();
+            std::io::stdin().read_line(&mut input)?;
+            if input == "catsploit_exit" {
+                return Ok(());
+            }
+            stream.write_all(input.as_bytes())?;
 
-            match stream.read(&mut buffer) {
-                Ok(n) => {
-                    if n == 0 {
-                        break;
+            // TODO: try again by using the bufreader to iterate on lines, shell input comes out in lines so that is only reasonable way
+            let mut read_poll_counter = 0;
+            loop {
+                let mut line = String::new();
+                match stream_buf.read_line(&mut line) {
+                    Ok(0) => break,
+                    Ok(_) => print!("{}", line),
+                    Err(ref e) if e.kind() == std::io::ErrorKind::WouldBlock => {
+                        // reading is blocked as no bytes coming from BufReader<TcpStream> right now
+                        // wait a bit and try again until READ_POLLS reached
+                        std::thread::sleep(Duration::from_millis(READ_POLL_SLEEP_MILLIS));
+                        read_poll_counter += 1;
+                        // println!("waiting read counter: {}", read_poll_counter);
+                        if read_poll_counter == READ_POLLS {
+                            break;
+                        }
                     }
-                    let received = String::from_utf8_lossy(&buffer[0..n]);
-                    println!("Received: {}", received.trim());
-                }
-                Err(e) => {
-                    eprintln!("Error reading from socket: {}", e);
-                    break;
+                    Err(e) => return Err(e.into()),
                 }
             }
         }
-        Ok(())
     }
 }
