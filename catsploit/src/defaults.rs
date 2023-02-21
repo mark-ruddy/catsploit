@@ -1,6 +1,8 @@
-use catsploit_lib::{core::payload::Payload, module::payload::ruby_reverse_tcp::RubyReverseTcp};
+use catsploit_lib::{
+    core::payload::Payload, module::payload::linux_shell::nc_mkfifo_reverse_tcp::NcMkfifoReverseTcp,
+};
 
 pub fn payload() -> Box<dyn Payload + Send + Sync> {
     // TODO: for now just declaring the default payload to be RubyReverseTcp
-    return Box::new(RubyReverseTcp::default());
+    return Box::new(NcMkfifoReverseTcp::default());
 }

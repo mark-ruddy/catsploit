@@ -37,7 +37,6 @@ impl Cli {
     }
 
     pub fn print_payload(&self, info: &payload::Info) -> Result<(), Box<dyn Error>> {
-        // let info = info.ok_or(NO_INFO)?;
         let mut payload_table = Table::new();
         payload_table.add_row(row!["Name", "Module Path", "Kind"]);
         payload_table.add_row(row![info.descriptive_name, info.module_path, info.kind]);

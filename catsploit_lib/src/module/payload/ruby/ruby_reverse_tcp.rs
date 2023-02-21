@@ -1,7 +1,10 @@
 use crate::core::{
     handler::generic_tcp_handler::GenericTcpHandler,
     opt::Opt,
-    payload::{reverse::Reverse, Info, Payload},
+    payload::{
+        reverse::{self, Reverse},
+        Info, Payload,
+    },
 };
 use log::info;
 use std::error::Error;
@@ -53,17 +56,7 @@ impl Payload for RubyReverseTcp {
     }
 
     fn apply_opts(&mut self, opts: Vec<Opt>) -> Result<(), Box<dyn Error>> {
-        for opt in opts {
-            match opt.name.as_str() {
-                // TODO: Need solution so code below is not duplicated for another module which uses Reverse
-                "LHOST" => {
-                    let lhost = opt.value.ok_or("LHOST option is required")?;
-                    self.reverse.lhost = lhost;
-                }
-                "LPORT" => self.reverse.lport = opt.value.ok_or("LPORT option is required")?,
-                _ => info!("Unknown option name {} was provided", opt.name),
-            }
-        }
+        reverse::apply_opts!(self, opts);
         Ok(())
     }
 }

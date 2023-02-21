@@ -25,11 +25,6 @@ impl Cli {
                     exploit_payload.apply_opts(exploit_payload.opts())?;
                 }
             };
-            println!(
-                "IN LIBRARY AFTER APPLYING OPTS TO CLONED PAYLOAD: {}",
-                exploit_payload.blob_to_string()?
-            );
-
             exploit.exploit(&exploit_payload)?;
         }
         Ok(())
