@@ -1,1 +1,3 @@
-- Write a revhsell payload that works on legacy systems like Metasploitable2
+// - Write a revshell payload that works on legacy systems like Metasploitable2(nc mkifo, done)
+- Write a full test suite and refactor as much as possible at this early stage, remove all TODOs
+- Improve user CLI experience, add the "use X(1)" functionality, make tables look better for "show payloads", etc
