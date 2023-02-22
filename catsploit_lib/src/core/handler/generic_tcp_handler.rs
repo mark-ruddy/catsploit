@@ -82,7 +82,7 @@ mod tests {
     use std::thread;
 
     const HOST: &str = "127.0.0.1";
-    const PORT: &str = "30347";
+    const PORT: &str = "40347";
 
     fn setup_test_handler() -> GenericTcpHandler {
         GenericTcpHandler::new(HOST, PORT).unwrap()
