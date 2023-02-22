@@ -9,3 +9,15 @@ pub fn random_alphanumeric(length: usize) -> String {
         .collect();
     random_alphanumeric
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_random_alphanumeric() {
+        let res = random_alphanumeric(6);
+        assert_eq!(res.len(), 6);
+        assert!(res.chars().all(char::is_alphanumeric));
+    }
+}
