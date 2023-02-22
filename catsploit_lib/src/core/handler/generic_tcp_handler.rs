@@ -20,7 +20,7 @@ impl GenericTcpHandler {
         Ok(Self { listener })
     }
 
-    pub fn listen_for_one(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn listen_for_one(&mut self, test: bool) -> Result<(), Box<dyn Error>> {
         // TODO: need timeout here while accepting
         info!(
             "Listening for one connection on: {}",
@@ -28,6 +28,10 @@ impl GenericTcpHandler {
         );
         let (stream, peer_addr) = self.listener.accept()?;
         info!("Received handler connection from: {}", peer_addr);
+        if test {
+            return Ok(());
+        }
+
         let stream_buf = BufReader::new(stream.try_clone()?);
         Self::open_shell(stream, stream_buf)?;
         Ok(())
@@ -69,5 +73,35 @@ impl GenericTcpHandler {
                 }
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::thread;
+
+    const HOST: &str = "127.0.0.1";
+    const PORT: &str = "30347";
+
+    fn setup_test_handler() -> GenericTcpHandler {
+        GenericTcpHandler::new(HOST, PORT).unwrap()
+    }
+
+    #[test]
+    fn test_accepts_one() {
+        let server_thread = thread::spawn(|| {
+            let mut handler = setup_test_handler();
+            handler.listen_for_one(true).unwrap();
+        });
+
+        let client_thread = thread::spawn(|| {
+            thread::sleep(Duration::from_millis(50));
+            let addr = format!("{}:{}", HOST, PORT);
+            TcpStream::connect(&addr).unwrap();
+        });
+
+        server_thread.join().unwrap();
+        client_thread.join().unwrap();
     }
 }

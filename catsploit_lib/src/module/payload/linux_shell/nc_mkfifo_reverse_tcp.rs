@@ -21,7 +21,7 @@ impl Payload for NcMkfifoReverseTcp {
 
     fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {
         let mut handler = GenericTcpHandler::new("0.0.0.0", &self.reverse.lport)?;
-        handler.listen_for_one()?;
+        handler.listen_for_one(false)?;
         Ok(())
     }
 
