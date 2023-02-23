@@ -7,4 +7,8 @@ General aim for automated testing within Catsploit is to write individual tests 
 - Tests are not written for functions that only print to STDOUT. Example being `print_exploit` in `catsploit/src/cli/info.rs`
 
 ### Running Tests
-TODO
+To run tests for both the catsploit library and the CLI application:
+
+```
+cargo test --manifest-path=catsploit_lib/Cargo.toml && cargo test --manifest-path=catsploit/Cargo.toml
+```

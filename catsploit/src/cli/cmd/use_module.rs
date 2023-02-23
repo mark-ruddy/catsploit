@@ -83,10 +83,10 @@ mod tests {
     use catsploit_lib::core::{exploit::Ranking, payload};
 
     const EXPLOIT_MODULE_PATH: &str = "exploit/ftp/vsftpd_234_backdoor";
-    const EXPLOIT_MODULE_PATH_NON_EXISTING: &str = "exploit/ftp/does_not_exist";
+    const EXPLOIT_MODULE_PATH_NON_EXISTANT: &str = "exploit/ftp/does_not_exist";
 
     const PAYLOAD_MODULE_PATH: &str = "payload/linux_shell/nc_mkfifo_reverse_tcp";
-    const PAYLOAD_MODULE_PATH_NON_EXISTING: &str = "payload/linux_shell/does_not_exist";
+    const PAYLOAD_MODULE_PATH_NON_EXISTANT: &str = "payload/linux_shell/does_not_exist";
 
     #[test]
     fn test_find_exploit() {
@@ -95,11 +95,11 @@ mod tests {
     }
 
     #[test]
-    fn test_find_exploit_non_existing() {
-        match find_exploit(EXPLOIT_MODULE_PATH_NON_EXISTING) {
-            Some(_) => panic!("Exploit was found for a non existant module path"),
-            None => (),
-        }
+    fn test_find_exploit_non_existant() {
+        assert!(
+            find_exploit(EXPLOIT_MODULE_PATH_NON_EXISTANT).is_none(),
+            "Exploit was found for a non existant module path"
+        );
     }
 
     #[test]
@@ -109,11 +109,11 @@ mod tests {
     }
 
     #[test]
-    fn test_find_payload_non_existing() {
-        match find_payload(PAYLOAD_MODULE_PATH_NON_EXISTING) {
-            Some(_) => panic!("Payload was found for a non existant module path"),
-            None => (),
-        }
+    fn test_find_payload_non_existant() {
+        assert!(
+            find_payload(PAYLOAD_MODULE_PATH_NON_EXISTANT).is_none(),
+            "Payload was found for a non existant module path"
+        )
     }
 
     #[test]
@@ -130,9 +130,9 @@ mod tests {
     }
 
     #[test]
-    fn test_use_exploit_non_existing() {
+    fn test_use_exploit_non_existant() {
         let mut cli = Cli::default();
-        match cli.use_exploit(EXPLOIT_MODULE_PATH_NON_EXISTING) {
+        match cli.use_exploit(EXPLOIT_MODULE_PATH_NON_EXISTANT) {
             Ok(_) => (),
             Err(e) => assert!(e.to_string().contains("No exploit found")),
         }
@@ -152,9 +152,9 @@ mod tests {
     }
 
     #[test]
-    fn test_use_payload_non_existing() {
+    fn test_use_payload_non_existant() {
         let mut cli = Cli::default();
-        match cli.use_payload(PAYLOAD_MODULE_PATH_NON_EXISTING) {
+        match cli.use_payload(PAYLOAD_MODULE_PATH_NON_EXISTANT) {
             Ok(_) => (),
             Err(e) => assert!(e.to_string().contains("No payload found")),
         }
