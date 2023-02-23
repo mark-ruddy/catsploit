@@ -45,12 +45,10 @@ impl Cli {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use catsploit_lib::core::payload;
 
-    use super::*;
-
     const EXPLOIT_MODULE_PATH: &str = "exploit/ftp/vsftpd_234_backdoor";
-
     const PAYLOAD_MODULE_PATH: &str = "payload/linux_shell/nc_mkfifo_reverse_tcp";
     const PAYLOAD_MODULE_PATH_NON_EXISTANT: &str = "payload/linux_shell/does_not_exist";
 
