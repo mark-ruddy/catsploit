@@ -5,7 +5,7 @@ use super::opt::Opt;
 
 pub mod reverse;
 
-#[derive(Debug)]
+#[derive(PartialEq, Debug)]
 pub enum Kind {
     ReverseShell,
     DirectShell,

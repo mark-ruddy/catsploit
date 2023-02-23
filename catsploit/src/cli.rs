@@ -1,5 +1,6 @@
 use std::{collections::HashMap, error::Error, io, process};
 
+use super::defaults;
 use catsploit_lib::{
     core::{
         exploit::{self, Exploit},
@@ -41,6 +42,25 @@ pub struct Cli {
 
     pub payload: Option<Box<dyn Payload + Send + Sync>>,
     pub payload_info: Option<payload::Info>,
+}
+
+impl Default for Cli {
+    fn default() -> Cli {
+        Cli {
+            prompt: None,
+            selected_module_kind: None,
+            selected_module_path: None,
+            selected_module_opts: None,
+            previous_module_opts: HashMap::new(),
+
+            exploit: None,
+            exploit_info: None,
+            exploit_payload: Some(defaults::payload()),
+
+            payload: None,
+            payload_info: None,
+        }
+    }
 }
 
 impl Cli {

@@ -36,7 +36,7 @@ impl Payload for NcMkfifoReverseTcp {
     fn info(&self) -> Info {
         Info {
             descriptive_name: "Netcat Mkfifo Reverse TCP".to_string(),
-            module_path: "payload/nc_mkfifo_reverse_tcp".to_string(),
+            module_path: "payload/linux_shell/nc_mkfifo_reverse_tcp".to_string(),
             kind: self.kind().to_string(),
             description: None,
             license: None,

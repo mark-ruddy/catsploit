@@ -38,7 +38,7 @@ impl Payload for RubyReverseTcp {
     fn info(&self) -> Info {
         Info {
             descriptive_name: "Ruby Reverse TCP".to_string(),
-            module_path: "payload/ruby_reverse_tcp".to_string(),
+            module_path: "payload/ruby/reverse_tcp".to_string(),
             kind: self.kind().to_string(),
             description: None,
             license: None,

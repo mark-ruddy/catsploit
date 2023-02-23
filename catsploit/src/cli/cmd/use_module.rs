@@ -76,3 +76,87 @@ impl Cli {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use catsploit_lib::core::{exploit::Ranking, payload};
+
+    const EXPLOIT_MODULE_PATH: &str = "exploit/ftp/vsftpd_234_backdoor";
+    const EXPLOIT_MODULE_PATH_NON_EXISTING: &str = "exploit/ftp/does_not_exist";
+
+    const PAYLOAD_MODULE_PATH: &str = "payload/linux_shell/nc_mkfifo_reverse_tcp";
+    const PAYLOAD_MODULE_PATH_NON_EXISTING: &str = "payload/linux_shell/does_not_exist";
+
+    #[test]
+    fn test_find_exploit() {
+        let exploit = find_exploit(EXPLOIT_MODULE_PATH).unwrap();
+        assert_eq!(exploit.ranking(), Ranking::Excellent);
+    }
+
+    #[test]
+    fn test_find_exploit_non_existing() {
+        match find_exploit(EXPLOIT_MODULE_PATH_NON_EXISTING) {
+            Some(_) => panic!("Exploit was found for a non existant module path"),
+            None => (),
+        }
+    }
+
+    #[test]
+    fn test_find_payload() {
+        let payload = find_payload(PAYLOAD_MODULE_PATH).unwrap();
+        assert_eq!(payload.kind(), payload::Kind::ReverseShell);
+    }
+
+    #[test]
+    fn test_find_payload_non_existing() {
+        match find_payload(PAYLOAD_MODULE_PATH_NON_EXISTING) {
+            Some(_) => panic!("Payload was found for a non existant module path"),
+            None => (),
+        }
+    }
+
+    #[test]
+    fn test_use_exploit() {
+        let mut cli = Cli::default();
+        cli.use_exploit(EXPLOIT_MODULE_PATH).unwrap();
+        assert_eq!(cli.selected_module_kind.unwrap(), Kind::Exploit);
+        assert_eq!(cli.selected_module_path.unwrap(), EXPLOIT_MODULE_PATH);
+        assert_eq!(
+            cli.exploit_info.unwrap().descriptive_name,
+            "VSFTPD v2.3.4 Backdoor Command Execution"
+        );
+        assert_eq!(cli.exploit.unwrap().ranking(), Ranking::Excellent);
+    }
+
+    #[test]
+    fn test_use_exploit_non_existing() {
+        let mut cli = Cli::default();
+        match cli.use_exploit(EXPLOIT_MODULE_PATH_NON_EXISTING) {
+            Ok(_) => (),
+            Err(e) => assert!(e.to_string().contains("No exploit found")),
+        }
+    }
+
+    #[test]
+    fn test_use_payload() {
+        let mut cli = Cli::default();
+        cli.use_payload(PAYLOAD_MODULE_PATH).unwrap();
+        assert_eq!(cli.selected_module_kind.unwrap(), Kind::Payload);
+        assert_eq!(cli.selected_module_path.unwrap(), PAYLOAD_MODULE_PATH);
+        assert_eq!(
+            cli.payload_info.unwrap().descriptive_name,
+            "Netcat Mkfifo Reverse TCP"
+        );
+        assert_eq!(cli.payload.unwrap().kind(), payload::Kind::ReverseShell);
+    }
+
+    #[test]
+    fn test_use_payload_non_existing() {
+        let mut cli = Cli::default();
+        match cli.use_payload(PAYLOAD_MODULE_PATH_NON_EXISTING) {
+            Ok(_) => (),
+            Err(e) => assert!(e.to_string().contains("No payload found")),
+        }
+    }
+}
