@@ -6,7 +6,6 @@ use crate::cli::Cli;
 
 impl Cli {
     pub fn print_exploit(&self, info: &exploit::Info) -> Result<(), Box<dyn Error>> {
-        // let info = info.ok_or(NO_INFO)?;
         let mut exploit_table = Table::new();
         exploit_table.add_row(row![
             "Name",
@@ -26,13 +25,14 @@ impl Cli {
 
         self.print_opts();
 
-        match &self.exploit_payload {
-            Some(exploit_payload) => println!(
-                "Selected Payload: {}",
-                exploit_payload.info().descriptive_name
-            ),
-            None => (),
-        }
+        let exploit_payload_name = match &self.exploit_payload {
+            Some(exploit_payload) => exploit_payload.info().descriptive_name,
+            None => "".to_string(),
+        };
+        let mut exploit_payload_table = Table::new();
+        exploit_payload_table.add_row(row!["Selected Payload", exploit_payload_name]);
+        exploit_payload_table.printstd();
+
         Ok(())
     }
 

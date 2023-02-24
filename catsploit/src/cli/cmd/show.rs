@@ -58,7 +58,7 @@ impl Cli {
             table.add_row(row![i, info.module_path, info.name, info.ranking]);
             self.displayed_list.insert(i, info.module_path);
         }
-        table.set_format(*format::consts::FORMAT_NO_BORDER);
+        // table.set_format(*format::consts::FORMAT_NO_BORDER);
         if !test {
             table.printstd();
         }
@@ -74,7 +74,7 @@ impl Cli {
             table.add_row(row![i, info.module_path, info.name, info.kind]);
             self.displayed_list.insert(i, info.module_path);
         }
-        table.set_format(*format::consts::FORMAT_NO_BORDER);
+        // table.set_format(*format::consts::FORMAT_NO_BORDER);
         if !test {
             table.printstd();
         }

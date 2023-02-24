@@ -4,12 +4,19 @@ use super::{
 };
 use crate::MODULE_KINDS;
 use catsploit_lib::module::Kind;
+use prettytable::Table;
 use std::error::Error;
 
 const NO_SUBCMD: &str = "This command requires an argument";
 
 struct ParsedModulePath {
     kind: Kind,
+}
+
+pub struct CommandHelp {
+    pub name: String,
+    pub description: String,
+    pub usage: String,
 }
 
 // TODO: For now just assuming that the subcmd is the module path, need to implement selecting by number but that requires "search" to be implemented and history
@@ -148,14 +155,48 @@ impl Cli {
         Ok(())
     }
 
-    pub fn handle_help(&self) {
-        // TODO: need to make help look better with tables or smth
-        println!(
-            "# Core Commands \
-            \n- show (Show available modules) \
-            \n- info (Display information for current module) \
-            \n- use  (Select a module) \
-            \n- exit (Exit catsploit console)"
-        );
+    pub fn print_specific_help(command_help_vec: Vec<CommandHelp>) {
+        let mut table = Table::new();
+        table.add_row(row!["Command", "Description", "Usage"]);
+        for command_help in command_help_vec {
+            table.add_row(row![
+                command_help.name,
+                command_help.description,
+                command_help.usage
+            ]);
+        }
+        table.printstd();
+    }
+
+    pub fn handle_help() {
+        let core_command_help: Vec<CommandHelp> = vec![
+            CommandHelp {
+                name: "show".to_string(),
+                description: "Show all modules of a kind".to_string(),
+                usage: "show exploits | show payloads".to_string(),
+            },
+            CommandHelp {
+                name: "use".to_string(),
+                description: "Select a module".to_string(),
+                usage: "use exploit/ftp/vsftpd_234_backdoor | show exploits > use 0".to_string(),
+            },
+            CommandHelp {
+                name: "info".to_string(),
+                description: "Display information on a selected module or specified module"
+                    .to_string(),
+                usage: "info | info exploit/ftp/vsftpd_234_backdoor".to_string(),
+            },
+            CommandHelp {
+                name: "set".to_string(),
+                description: "Set an option in a selected module or set a payload to use for a selected exploit".to_string(),
+                usage: "use exploit/ftp/vsftpd_234_backdoor > set RHOST 8.8.8.8 | use exploit/ftp/vsftpd_234_backdoor > set payload payload/ruby/reverse_tcp".to_string(),
+            },
+            CommandHelp {
+                name: "exit".to_string(),
+                description: "Exit Catsploit".to_string(),
+                usage: "exit".to_string(),
+            }
+        ];
+        Cli::print_specific_help(core_command_help);
     }
 }

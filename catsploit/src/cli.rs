@@ -134,7 +134,7 @@ impl Cli {
             "use" => self.handle_use(input.subcmd)?,
             "set" => self.handle_set(input.subcmd, input.args)?,
             "run" => self.handle_run()?,
-            "help" => self.handle_help(),
+            "help" => Cli::handle_help(),
             "exit" => {
                 println!("Exiting...");
                 process::exit(0);
