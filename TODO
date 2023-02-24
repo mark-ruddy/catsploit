@@ -11,3 +11,4 @@
 
 Future:
 - info module_path doesn't print the options, not super necessary but a good to have in future
+- search command

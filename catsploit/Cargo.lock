@@ -34,7 +34,6 @@ name = "catsploit"
 version = "0.1.0"
 dependencies = [
  "catsploit_lib",
- "dyn-clone",
  "env_logger",
  "log",
  "prettytable-rs",

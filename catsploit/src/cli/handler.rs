@@ -2,7 +2,7 @@ use super::{
     cmd::use_module::{find_exploit, find_payload},
     Cli,
 };
-use crate::MODULE_KINDS;
+use crate::{err_msgs, MODULE_KINDS};
 use catsploit_lib::module::Kind;
 use prettytable::Table;
 use std::error::Error;
@@ -19,7 +19,6 @@ pub struct CommandHelp {
     pub usage: String,
 }
 
-// TODO: For now just assuming that the subcmd is the module path, need to implement selecting by number but that requires "search" to be implemented and history
 impl Cli {
     fn parse_module_path(&self, module_path: &str) -> Result<ParsedModulePath, Box<dyn Error>> {
         let split = module_path.split("/");
@@ -61,12 +60,12 @@ impl Cli {
                 match parsed_module_path.kind {
                     Kind::Exploit => {
                         let exploit = find_exploit(&module_path)
-                            .ok_or("No exploit exists at module...TODO duplicate error messages")?;
+                            .ok_or(err_msgs::no_exploits_exist(&module_path))?;
                         self.print_exploit(&exploit.info())?;
                     }
                     Kind::Payload => {
-                        let payload =
-                            find_payload(&module_path).ok_or("No payload exists at module...")?;
+                        let payload = find_payload(&module_path)
+                            .ok_or(err_msgs::no_payloads_exist(&module_path))?;
                         self.print_payload(&payload.info())?;
                     }
                     Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
@@ -81,12 +80,12 @@ impl Cli {
                 Kind::Exploit => self.print_exploit(
                     self.exploit_info
                         .as_ref()
-                        .ok_or("No selected exploit module to display info on")?,
+                        .ok_or(err_msgs::NO_EXPLOIT_MODULE_INFO)?,
                 )?,
                 Kind::Payload => self.print_payload(
                     self.payload_info
                         .as_ref()
-                        .ok_or("No selected payload module to display info on")?,
+                        .ok_or(err_msgs::NO_PAYLOAD_MODULE_INFO)?,
                 )?,
                 Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             },

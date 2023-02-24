@@ -3,6 +3,5 @@ use catsploit_lib::{
 };
 
 pub fn payload() -> Box<dyn Payload + Send + Sync> {
-    // TODO: for now just declaring the default payload to be RubyReverseTcp
     return Box::new(NcMkfifoReverseTcp::default());
 }

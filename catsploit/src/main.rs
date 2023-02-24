@@ -5,6 +5,7 @@ use std::{error::Error, io, io::Write};
 
 mod cli;
 mod defaults;
+mod err_msgs;
 
 const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
 

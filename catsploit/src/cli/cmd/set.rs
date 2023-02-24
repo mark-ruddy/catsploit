@@ -1,7 +1,7 @@
 use crate::cli::Cli;
-use catsploit_lib::core::payload::Payload;
-use catsploit_lib::module::index;
 use std::error::Error;
+
+use super::use_module::find_payload;
 
 impl Cli {
     pub fn set_opt(&mut self, opt_name: &str, value: &str) -> Result<(), Box<dyn Error>> {
@@ -25,14 +25,7 @@ impl Cli {
     }
 
     pub fn set_payload(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
-        // TODO: code adapted from use_module.rs, maybe some can be extracted to fn
-        let payloads = index::payloads();
-        let mut selected_payload: Option<Box<dyn Payload + Send + Sync>> = None;
-        for payload in payloads {
-            if payload.info().module_path == module_path {
-                selected_payload = Some(payload);
-            }
-        }
+        let selected_payload = find_payload(&module_path);
         match selected_payload {
             Some(payload) => {
                 self.exploit_payload = Some(payload);
