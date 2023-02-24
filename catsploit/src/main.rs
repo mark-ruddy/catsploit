@@ -13,6 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut cli = Cli::default();
     cli.print_banner();
+    cli.print_module_stats();
     loop {
         cli.print_prompt();
         io::stdout().flush()?;

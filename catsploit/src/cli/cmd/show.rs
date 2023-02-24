@@ -37,6 +37,17 @@ fn extract_payload_show_info(info: payload::Info) -> PayloadShowInfo {
 }
 
 impl Cli {
+    pub fn print_module_stats(&self) {
+        let exploits = index::exploits();
+        let payloads = index::payloads();
+        let mut table = Table::new();
+        table.add_row(row!["Module Type", "Loaded"]);
+        table.add_row(row!["Exploits", exploits.len()]);
+        table.add_row(row!["Payloads", payloads.len()]);
+        table.set_format(*format::consts::FORMAT_NO_COLSEP);
+        table.printstd();
+    }
+
     pub fn show_exploits() {
         let exploits = index::exploits();
         let mut table = Table::new();

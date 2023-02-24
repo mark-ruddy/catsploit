@@ -1,5 +1,3 @@
-use std::{collections::HashMap, error::Error, io, process};
-
 use super::defaults;
 use catsploit_lib::{
     core::{
@@ -7,8 +5,10 @@ use catsploit_lib::{
         opt::Opt,
         payload::{self, Payload},
     },
-    module::Kind,
+    module::{index, Kind},
 };
+use prettytable::{format, Table};
+use std::{collections::HashMap, error::Error, io, process};
 
 mod cmd;
 mod handler;
