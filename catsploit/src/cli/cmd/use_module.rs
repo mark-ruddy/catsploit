@@ -27,6 +27,20 @@ pub fn find_payload(module_path: &str) -> Option<Box<dyn Payload + Send + Sync>>
 }
 
 impl Cli {
+    pub fn use_from_displayed_list(&mut self, index: &usize) -> Result<(), Box<dyn Error>> {
+        match self.displayed_list.get(index) {
+            Some(module_path) => {
+                self.handle_use_with_module_path(module_path.clone().as_str())?;
+                Ok(())
+            }
+            None => Err(format!(
+                "Last displayed module list does not have an entry for '{}'",
+                index
+            )
+            .into()),
+        }
+    }
+
     pub fn use_exploit(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
         let selected_exploit = find_exploit(module_path);
         match selected_exploit {
@@ -36,12 +50,9 @@ impl Cli {
                 self.selected_module_kind = Some(Kind::Exploit);
                 self.selected_module_path = Some(exploit_info.module_path.clone());
 
-                // TODO: below code block is near duplicated in use_payload, might be acceptable in this case
-                match self.previous_module_opts.get(module_path) {
-                    Some(previous_module_opts) => {
-                        self.selected_module_opts = Some(previous_module_opts.clone())
-                    }
-                    None => self.selected_module_opts = Some(exploit.opts()),
+                match self.apply_previous_module_opts(module_path) {
+                    true => (),
+                    false => self.selected_module_opts = Some(exploit.opts()),
                 }
 
                 self.exploit = Some(exploit);
@@ -61,11 +72,9 @@ impl Cli {
                 self.selected_module_kind = Some(Kind::Payload);
                 self.selected_module_path = Some(payload_info.module_path.clone());
 
-                match self.previous_module_opts.get(module_path) {
-                    Some(previous_module_opts) => {
-                        self.selected_module_opts = Some(previous_module_opts.clone())
-                    }
-                    None => self.selected_module_opts = Some(payload.opts()),
+                match self.apply_previous_module_opts(module_path) {
+                    true => (),
+                    false => self.selected_module_opts = Some(payload.opts()),
                 }
 
                 self.payload = Some(payload);
@@ -133,7 +142,7 @@ mod tests {
     fn test_use_exploit_non_existant() {
         let mut cli = Cli::default();
         match cli.use_exploit(EXPLOIT_MODULE_PATH_NON_EXISTANT) {
-            Ok(_) => (),
+            Ok(_) => panic!("Use exploit should not be successful for non existant module path"),
             Err(e) => assert!(e.to_string().contains("No exploit found")),
         }
     }
@@ -155,8 +164,39 @@ mod tests {
     fn test_use_payload_non_existant() {
         let mut cli = Cli::default();
         match cli.use_payload(PAYLOAD_MODULE_PATH_NON_EXISTANT) {
-            Ok(_) => (),
+            Ok(_) => panic!("Use payload should not be successful for non existant module path"),
             Err(e) => assert!(e.to_string().contains("No payload found")),
+        }
+    }
+
+    #[test]
+    fn test_use_from_displayed_list() {
+        let mut cli = Cli::default();
+        // the first exploit shown in show_exploits is expected to be vsftpd_234_backdoor with index 0
+        cli.show_exploits(true);
+        // handle_use should parse that the subcmd is a number and call use_from_displayed_list
+        cli.handle_use(Some("0".to_string())).unwrap();
+        assert_eq!(cli.selected_module_kind.unwrap(), Kind::Exploit);
+        assert_eq!(cli.selected_module_path.unwrap(), EXPLOIT_MODULE_PATH);
+        assert_eq!(
+            cli.exploit_info.unwrap().descriptive_name,
+            "VSFTPD v2.3.4 Backdoor Command Execution"
+        );
+        assert_eq!(cli.exploit.unwrap().ranking(), Ranking::Excellent);
+    }
+
+    #[test]
+    fn test_use_from_displayed_list_non_existant() {
+        let mut cli = Cli::default();
+        cli.show_exploits(true);
+        match cli.handle_use(Some("999999".to_string())) {
+            Ok(_) => panic!("Handle use should not be successful for non existant module index"),
+            Err(e) => {
+                println!("ERR: {}", e);
+                assert!(e
+                    .to_string()
+                    .contains("Last displayed module list does not have an entry for"));
+            }
         }
     }
 }

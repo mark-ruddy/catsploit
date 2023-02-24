@@ -34,12 +34,12 @@ impl Cli {
         Ok(ParsedModulePath { kind: kind_enum })
     }
 
-    pub fn handle_show(&self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
+    pub fn handle_show(&mut self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
         const SHOW_SUBCMD_INCORRECT: &str = "Possible options for show are 'exploits', 'payloads'";
         match subcmd {
             Some(subcmd) => match subcmd.as_str() {
-                "exploits" => Cli::show_exploits(),
-                "payloads" => Cli::show_payloads(),
+                "exploits" => self.show_exploits(false),
+                "payloads" => self.show_payloads(false),
                 _ => return Err(SHOW_SUBCMD_INCORRECT.into()),
             },
             None => return Err(SHOW_SUBCMD_INCORRECT.into()),
@@ -91,15 +91,27 @@ impl Cli {
     pub fn handle_use(&mut self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
         match subcmd {
             Some(subcmd) => {
-                let parsed_module_path = self.parse_module_path(&subcmd)?;
-                match parsed_module_path.kind {
-                    Kind::Exploit => self.use_exploit(&subcmd)?,
-                    Kind::Payload => self.use_payload(&subcmd)?,
-                    Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+                match subcmd.parse::<usize>() {
+                    Ok(subcmd) => {
+                        self.use_from_displayed_list(&subcmd)?;
+                        return Ok(());
+                    }
+                    Err(_) => (),
                 }
+                self.handle_use_with_module_path(&subcmd)?;
             }
             None => return Err(NO_SUBCMD.into()),
         };
+        Ok(())
+    }
+
+    pub fn handle_use_with_module_path(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
+        let parsed_module_path = self.parse_module_path(module_path)?;
+        match parsed_module_path.kind {
+            Kind::Exploit => self.use_exploit(module_path)?,
+            Kind::Payload => self.use_payload(module_path)?,
+            Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+        }
         Ok(())
     }
 

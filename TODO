@@ -3,7 +3,7 @@
   // - Write initial lib tests
   // - Write initial CLI tests
 - Improve user CLI experience, add the "use X(1)" functionality, make tables look better for "show payloads", etc
-  - print module stats on boot
+  // - print module stats on boot
   - use 1 functionality
   - make `help` display properly
   - make show/info tables look better

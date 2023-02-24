@@ -48,27 +48,35 @@ impl Cli {
         table.printstd();
     }
 
-    pub fn show_exploits() {
+    pub fn show_exploits(&mut self, test: bool) {
         let exploits = index::exploits();
         let mut table = Table::new();
         table.add_row(row!["#", "Module Path", "Name", "Ranking"]);
+        self.displayed_list.clear();
         for (i, exploit) in exploits.iter().enumerate() {
             let info = extract_exploit_show_info(exploit.info());
             table.add_row(row![i, info.module_path, info.name, info.ranking]);
+            self.displayed_list.insert(i, info.module_path);
         }
         table.set_format(*format::consts::FORMAT_NO_BORDER);
-        table.printstd();
+        if !test {
+            table.printstd();
+        }
     }
 
-    pub fn show_payloads() {
+    pub fn show_payloads(&mut self, test: bool) {
         let payloads = index::payloads();
         let mut table = Table::new();
         table.add_row(row!["#", "Module Path", "Name", "Kind"]);
+        self.displayed_list.clear();
         for (i, payload) in payloads.iter().enumerate() {
             let info = extract_payload_show_info(payload.info());
             table.add_row(row![i, info.module_path, info.name, info.kind]);
+            self.displayed_list.insert(i, info.module_path);
         }
         table.set_format(*format::consts::FORMAT_NO_BORDER);
-        table.printstd();
+        if !test {
+            table.printstd();
+        }
     }
 }

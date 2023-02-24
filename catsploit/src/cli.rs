@@ -35,6 +35,7 @@ pub struct Cli {
     pub selected_module_path: Option<String>,
     pub selected_module_opts: Option<Vec<Opt>>,
     pub previous_module_opts: HashMap<String, Vec<Opt>>,
+    pub displayed_list: HashMap<usize, String>,
 
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
@@ -52,6 +53,7 @@ impl Default for Cli {
             selected_module_path: None,
             selected_module_opts: None,
             previous_module_opts: HashMap::new(),
+            displayed_list: HashMap::new(),
 
             exploit: None,
             exploit_info: None,

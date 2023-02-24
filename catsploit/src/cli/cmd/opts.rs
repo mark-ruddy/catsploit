@@ -53,6 +53,16 @@ impl Cli {
         );
         Ok(())
     }
+
+    pub fn apply_previous_module_opts(&mut self, module_path: &str) -> bool {
+        match self.previous_module_opts.get(module_path) {
+            Some(previous_module_opts) => {
+                self.selected_module_opts = Some(previous_module_opts.clone());
+                true
+            }
+            None => false,
+        }
+    }
 }
 
 #[cfg(test)]
