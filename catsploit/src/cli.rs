@@ -5,9 +5,8 @@ use catsploit_lib::{
         opt::Opt,
         payload::{self, Payload},
     },
-    module::{index, Kind},
+    module::Kind,
 };
-use prettytable::{format, Table};
 use std::{collections::HashMap, error::Error, io, process};
 
 mod cmd;
@@ -129,6 +128,7 @@ impl Cli {
 
     pub fn handle_input(&mut self, input: UserInput) -> Result<(), Box<dyn Error>> {
         match input.cmd.as_str() {
+            "modules" => self.print_module_stats(),
             "show" => self.handle_show(input.subcmd)?,
             "info" => self.handle_info(input.subcmd)?,
             "use" => self.handle_use(input.subcmd)?,

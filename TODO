@@ -2,9 +2,12 @@
 // - Write a full test suite and refactor as much as possible at this early stage, remove all TODOs
   // - Write initial lib tests
   // - Write initial CLI tests
-- Improve user CLI experience, add the "use X(1)" functionality, make tables look better for "show payloads", etc
+// - Improve user CLI experience, add the "use X(1)" functionality, make tables look better for "show payloads", etc
   // - print module stats on boot
   // - use 1 functionality
-  - make `help` display properly
-  - info working for module paths not just currently selected
-  - make show/info tables look better
+  // - make `help` display properly
+- Refactoring
+  - go through all TODOs and fix up
+
+Future:
+- info module_path doesn't print the options, not super necessary but a good to have in future

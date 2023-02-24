@@ -171,6 +171,11 @@ impl Cli {
     pub fn handle_help() {
         let core_command_help: Vec<CommandHelp> = vec![
             CommandHelp {
+                name: "modules".to_string(),
+                description: "Display information on loaded modules".to_string(),
+                usage: "modules".to_string(),
+            },
+            CommandHelp {
                 name: "show".to_string(),
                 description: "Show all modules of a kind".to_string(),
                 usage: "show exploits | show payloads".to_string(),
