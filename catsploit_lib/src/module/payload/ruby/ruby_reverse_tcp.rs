@@ -3,7 +3,7 @@ use crate::core::{
     opt::Opt,
     payload::{
         reverse::{self, Reverse},
-        Info, Payload,
+        Info, Kind, Payload,
     },
 };
 use log::info;
@@ -19,6 +19,14 @@ impl Payload for RubyReverseTcp {
         RubyReverseTcp {
             reverse: Reverse::default(),
         }
+    }
+
+    fn kind(&self) -> Kind {
+        Kind::ReverseShell
+    }
+
+    fn needs_pretask(&self) -> bool {
+        true
     }
 
     fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {

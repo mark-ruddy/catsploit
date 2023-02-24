@@ -47,13 +47,13 @@ pub trait Payload: DynClone {
     where
         Self: Sized;
 
-    fn kind(&self) -> Kind {
-        Kind::ReverseShell
+    fn kind(&self) -> Kind;
+
+    fn needs_pretask(&self) -> bool;
+
+    fn pretask(&self) -> Result<(), Box<dyn Error>> {
+        Err("Unimplemented pretask".into())
     }
-
-    fn info(&self) -> Info;
-
-    fn pretask(&self) -> Result<(), Box<dyn Error>>;
 
     fn blob(&self) -> Vec<u8>;
 
@@ -64,6 +64,8 @@ pub trait Payload: DynClone {
             Err(e) => Err(format!("failed to convert blob to UTF-8 string: {}", e).into()),
         }
     }
+
+    fn info(&self) -> Info;
 
     fn blob_insert(&self, blob: Vec<u8>) -> Vec<u8> {
         // TODO: Blob insert for now does nothing except return the raw blob

@@ -1,7 +1,7 @@
 use crate::core::{
     handler::generic_tcp_handler::GenericTcpHandler,
     opt::Opt,
-    payload::reverse,
+    payload::{reverse, Kind},
     payload::{reverse::Reverse, Info, Payload},
 };
 use log::info;
@@ -17,6 +17,14 @@ impl Payload for NcMkfifoReverseTcp {
         NcMkfifoReverseTcp {
             reverse: Reverse::default(),
         }
+    }
+
+    fn kind(&self) -> Kind {
+        Kind::ReverseShell
+    }
+
+    fn needs_pretask(&self) -> bool {
+        true
     }
 
     fn pretask(&self) -> Result<(), Box<dyn std::error::Error>> {

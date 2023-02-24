@@ -10,5 +10,6 @@
   - go through all TODOs and fix up
 
 Future:
+- get a basic auxiliary module setup, if only to have the groundwork for more to be added
 - info module_path doesn't print the options, not super necessary but a good to have in future
 - search command

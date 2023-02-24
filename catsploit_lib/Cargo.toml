@@ -8,8 +8,6 @@ edition = "2021"
 [dependencies]
 log = "0.4.17"
 rand = "0.8.5"
-
-# TODO: below crate are probably tech debt, required for now to be able to have async pretask method on payload and clone it so that it can be sent into background to run
 dyn-clone = "1.0.10"
 
 [dev-dependencies]
