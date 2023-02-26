@@ -21,7 +21,6 @@ impl GenericTcpHandler {
     }
 
     pub fn listen_for_one(&mut self, test: bool) -> Result<(), Box<dyn Error>> {
-        // TODO: need timeout here while accepting
         info!(
             "Listening for one connection on: {}",
             self.listener.local_addr()?
@@ -47,12 +46,11 @@ impl GenericTcpHandler {
             std::io::stdout().flush()?;
             let mut input = String::new();
             std::io::stdin().read_line(&mut input)?;
-            if input == "catsploit_exit" {
+            if input.trim() == "catsploit_exit" {
                 return Ok(());
             }
             stream.write_all(input.as_bytes())?;
 
-            // TODO: try again by using the bufreader to iterate on lines, shell input comes out in lines so that is only reasonable way
             let mut read_poll_counter = 0;
             loop {
                 let mut line = String::new();
@@ -64,7 +62,6 @@ impl GenericTcpHandler {
                         // wait a bit and try again until READ_POLLS reached
                         std::thread::sleep(Duration::from_millis(READ_POLL_SLEEP_MILLIS));
                         read_poll_counter += 1;
-                        // println!("waiting read counter: {}", read_poll_counter);
                         if read_poll_counter == READ_POLLS {
                             break;
                         }

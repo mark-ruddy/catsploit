@@ -28,20 +28,6 @@ pub struct Info {
     pub platform: Option<Vec<String>>,
 }
 
-// TODO: need a better way to define whether a payload has pretask or not
-/// Run the pretask of any payload, will skip if the payload kind doesn't use pretask
-/// Revshells for example may use a pretask to start the listener on the attacking machine
-pub fn run_pretask(payload: Box<dyn Payload + Send + Sync>) -> Result<(), Box<dyn Error>> {
-    match payload.kind() {
-        Kind::ReverseShell => {
-            // TODO: how to propogate error
-            payload.pretask()?;
-        }
-        _ => (),
-    }
-    Ok(())
-}
-
 pub trait Payload: DynClone {
     fn default() -> Self
     where
@@ -68,7 +54,6 @@ pub trait Payload: DynClone {
     fn info(&self) -> Info;
 
     fn blob_insert(&self, blob: Vec<u8>) -> Vec<u8> {
-        // TODO: Blob insert for now does nothing except return the raw blob
         blob
     }
 
