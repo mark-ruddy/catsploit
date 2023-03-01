@@ -15,10 +15,10 @@ cargo build --release
 sudo cp ./target/release/catsploit /usr/local/bin
 ```
 
-## Example Usage - Exploiting an VSFTPD v2.3.4 backdoor
+## Example Usage - Exploiting the VSFTPD v2.3.4 Backdoor
 In this exploitation a virtual machine with Metasploitable2 is running at `172.16.187.128`, which has a vulnerable `VSFTPD` server running:
 
-- The default reverse shell nc_mkfifo_reverse_tcp payload has its `LHOST` set to `172.16.1.1` which is where VMware routes back to the host machine
+- The default reverse shell `nc_mkfifo_reverse_tcp` payload has its `LHOST` set to `172.16.1.1` which is where VMware routes back to the host machine
 - The VSFTPD exploit has its `RHOST` set to `172.16.187.128` and the default `RPORT` is `21` for the FTP server
 - When `run` is called, the exploit runs and the payload runs a pretask which starts a listening TCP server for the shell connection
 - The exploit is successful and the payload executes on the Metasploitable2 system, the listening TCP server receives a connection and a root shell is opened
