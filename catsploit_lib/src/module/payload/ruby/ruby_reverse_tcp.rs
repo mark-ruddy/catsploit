@@ -6,7 +6,6 @@ use crate::core::{
         Info, Kind, Payload,
     },
 };
-use log::info;
 use std::error::Error;
 
 #[derive(Clone)]

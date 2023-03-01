@@ -43,7 +43,7 @@ macro_rules! apply_opts {
                     $self.reverse.lhost = lhost;
                 }
                 "LPORT" => $self.reverse.lport = opt.value.ok_or("LPORT option is required")?,
-                _ => info!("Unknown option name was provided: {}", opt.name,),
+                _ => (),
             }
         }
     };

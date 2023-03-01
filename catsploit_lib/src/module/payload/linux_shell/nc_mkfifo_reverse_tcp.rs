@@ -4,7 +4,6 @@ use crate::core::{
     payload::{reverse, Kind},
     payload::{reverse::Reverse, Info, Payload},
 };
-use log::info;
 use std::error::Error;
 
 #[derive(Clone)]

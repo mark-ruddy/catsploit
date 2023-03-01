@@ -8,8 +8,9 @@
   // - make `help` display properly
 // - Refactoring
   // - go through all TODOs and fix up
+- library documentation and CLI usage documentation
 
-Future:
-- get a basic auxiliary module setup, if only to have the groundwork for more to be added
+Far future:
+- search modules command
+- more module types - encoders, auxiliary, evasion, etc.
 - info module_path doesn't print the options, not super necessary but a good to have in future
-- search command
