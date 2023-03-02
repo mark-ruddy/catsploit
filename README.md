@@ -24,7 +24,6 @@ In this exploitation a virtual machine with Metasploitable2 is running at `172.1
 - The exploit is successful and the payload executes on the Metasploitable2 system, the listening TCP server receives a connection and a root shell is opened
 
 [![asciicast](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R.png)](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R)
-[![asciicast](https://asciinema.org/a/14.png)](https://asciinema.org/a/14)
 
 ## TODO
 
