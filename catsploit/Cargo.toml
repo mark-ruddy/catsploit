@@ -2,7 +2,7 @@
 name = "catsploit"
 version = "0.1.0"
 edition = "2021"
-description = "Catsploit CLI"
+description = "An open-source modern exploitation framework inspired by Metasploit"
 homepage = "https://github.com/tirax-lab/catsploit/tree/main/catsploit"
 repository = "https://github.com/tirax-lab/catsploit/tree/main/catsploit"
 license-file = "../LICENSE"

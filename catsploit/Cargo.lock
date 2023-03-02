@@ -30,6 +30,8 @@ dependencies = [
 [[package]]
 name = "catsploit_lib"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8c6f05aca2a6846f21e5b5800c465857a2c10bd49b1af00757e7359d78330123"
 dependencies = [
  "dyn-clone",
  "log",
