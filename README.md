@@ -26,12 +26,9 @@ In this exploitation a virtual machine with Metasploitable2 is running at `172.1
 [![asciicast](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R.png)](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R)
 
 ## Contributing
+Contributing to Catsploit is very flexible, check the current open issues to work on. Feel free to open a new issue for an enhancement and work on the PR from there.  
 
-### TODO
-
-- Module Types, catsploit currently has exploit and payload module types defined. Auxiliary, Evasion, Encoder, and many other module types should be created
-- More modules, more exploits, payloads and others written so that catsploit becomes usable in a general pentest
-- Better documentation for new users, tutorials, videos, etc.
+Github Actions CI/CD will run the automated unit/integration tests against your PR code. Set your code editor to automatically format your code with [rustfmt](https://github.com/rust-lang/rustfmt) for consistent formatting within catsploit.
 
 ## Code Structure
 - The `catsploit` directory contains only the code to create the CLI app, such as the user input loop and dealing with setting module options. `catsploit` interacts with the `catsploit_lib` library
