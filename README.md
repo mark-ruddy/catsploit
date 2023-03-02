@@ -30,6 +30,8 @@ Contributing to Catsploit is very flexible, check the current open issues to wor
 
 Github Actions CI/CD will run the automated unit/integration tests against your PR code. Set your code editor to automatically format your code with [rustfmt](https://github.com/rust-lang/rustfmt) for consistent formatting within catsploit.
 
+And join the discord to discuss catsploit! https://discord.gg/J3Mj8ZG2bq
+
 ## Code Structure
 - The `catsploit` directory contains only the code to create the CLI app, such as the user input loop and dealing with setting module options. `catsploit` interacts with the `catsploit_lib` library
 - The `catsploit_lib` directory contains the library. `catsploit_lib` contains the functional code for carrying out tasks with Catsploit. For example the `Exploit` trait and also the individual modules such as the `Vsftpd234Backdoor` exploit
