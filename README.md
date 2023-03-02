@@ -23,7 +23,7 @@ In this exploitation a virtual machine with Metasploitable2 is running at `172.1
 - When `run` is called, the exploit runs and the payload runs a pretask which starts a listening TCP server for the shell connection
 - The exploit is successful and the payload executes on the Metasploitable2 system, the listening TCP server receives a connection and a root shell is opened
 
-[![asciicast](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R.png)](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R)
+![![asciicast](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R.png)](https://asciinema.org/a/SSTvtRi8cecmZvb687MjNkB1R)
 
 ## TODO
 
