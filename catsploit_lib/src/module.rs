@@ -4,7 +4,7 @@ pub mod auxiliary;
 pub mod exploit;
 pub mod payload;
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Eq, Debug)]
 pub enum Kind {
     Auxiliary,
     Exploit,
