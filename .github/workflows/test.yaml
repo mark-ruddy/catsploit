@@ -1,0 +1,21 @@
+name: test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v2
+      - name: Run catsploit_lib tests
+        run: cargo test --manifest-path=catsploit_lib/Cargo.toml
+      - name: Run catsploit tests
+        run: cargo test --manifest-path=catsploit/Cargo.toml
