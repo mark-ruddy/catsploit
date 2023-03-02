@@ -11,7 +11,9 @@ readme = "../README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-catsploit_lib = { path = "../catsploit_lib" }
+# NOTE: when doing local development on CLI with changes to library, can change dependency to path instead of crates.io version
+# catsploit_lib = { path = "../catsploit_lib" }
+catsploit_lib = "0.1.0"
 log = "0.4.17"
 env_logger = "0.10.0"
 prettytable-rs = "0.10.0"
