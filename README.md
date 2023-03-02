@@ -1,5 +1,5 @@
 # Catsploit
-Catsploit is an open-source modern exploitation framework.  
+Catsploit is an open-source modern exploitation framework inspired by [metasploit](https://github.com/rapid7/metasploit-framework)
 
 Catsploit is currently in early development and the project is aiming to attract contributors who are interested in building the next generation exploitation framework in Rust. The project is intended to stay 100% open-source with no premium version, and is licensed under GPLv3.
 
