@@ -3,5 +3,5 @@ use catsploit_lib::{
 };
 
 pub fn payload() -> Box<dyn Payload + Send + Sync> {
-    return Box::new(NcMkfifoReverseTcp::default());
+    Box::new(NcMkfifoReverseTcp::default())
 }

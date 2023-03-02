@@ -32,13 +32,13 @@ impl Cli {
                         }
                     }
                 }
-                return Err(format!(
+                Err(format!(
                     "No option with name '{}' found in selected module options",
                     name
                 )
-                .into());
+                .into())
             }
-            None => return Err("No selected module options to get value from".into()),
+            None => Err("No selected module options to get value from".into()),
         }
     }
 

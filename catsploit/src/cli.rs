@@ -91,7 +91,7 @@ impl Cli {
         let mut input = String::new();
         io::stdin().read_line(&mut input)?;
         input = input.trim().to_string();
-        let split = input.split(" ");
+        let split = input.split(' ');
         let split_vec: Vec<String> = split.map(|s| s.to_string()).collect();
 
         let mut user_input = UserInput::default();
@@ -118,7 +118,7 @@ impl Cli {
         let args_vec = &split_vec[2..];
         let args_vec = args_vec.to_vec();
 
-        if args_vec.len() > 0 {
+        if !args_vec.is_empty() {
             user_input.args = Some(args_vec);
         } else {
             user_input.args = None;
@@ -140,7 +140,7 @@ impl Cli {
                 process::exit(0);
             }
             _ => {
-                if input.cmd != "" {
+                if !input.cmd.is_empty() {
                     println!("Unknown command '{}'", input.cmd);
                 }
             }

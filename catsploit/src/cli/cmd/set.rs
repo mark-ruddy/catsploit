@@ -25,7 +25,7 @@ impl Cli {
     }
 
     pub fn set_payload(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
-        let selected_payload = find_payload(&module_path);
+        let selected_payload = find_payload(module_path);
         match selected_payload {
             Some(payload) => {
                 self.exploit_payload = Some(payload);

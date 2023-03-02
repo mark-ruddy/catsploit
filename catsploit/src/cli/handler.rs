@@ -21,10 +21,10 @@ pub struct CommandHelp {
 
 impl Cli {
     fn parse_module_path(&self, module_path: &str) -> Result<ParsedModulePath, Box<dyn Error>> {
-        let split = module_path.split("/");
+        let split = module_path.split('/');
         let split_vec: Vec<&str> = split.collect();
 
-        let kind = match split_vec.get(0) {
+        let kind = match split_vec.first() {
             Some(kind) => kind,
             None => return Err("Invalid module path, no kind present".into()),
         };
@@ -129,7 +129,7 @@ impl Cli {
         const MISSING_VALUE: &str = "Missing value argument";
         let subcmd = subcmd.ok_or("Missing option name argument")?;
         let args = args.ok_or(MISSING_VALUE)?;
-        if args.len() < 1 {
+        if args.is_empty() {
             return Err(MISSING_VALUE.into());
         }
 
