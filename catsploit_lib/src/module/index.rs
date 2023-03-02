@@ -7,14 +7,12 @@ use crate::module::payload::{
 };
 
 pub fn exploits() -> Vec<Box<dyn Exploit>> {
-    let mut exploits: Vec<Box<dyn Exploit>> = Vec::new();
-    exploits.push(Box::new(Vsftpd234Backdoor::default()));
-    exploits
+    vec![Box::new(Vsftpd234Backdoor::default())]
 }
 
 pub fn payloads() -> Vec<Box<dyn Payload + Send + Sync>> {
-    let mut payloads: Vec<Box<dyn Payload + Send + Sync>> = Vec::new();
-    payloads.push(Box::new(RubyReverseTcp::default()));
-    payloads.push(Box::new(NcMkfifoReverseTcp::default()));
-    payloads
+    vec![
+        Box::new(RubyReverseTcp::default()),
+        Box::new(NcMkfifoReverseTcp::default()),
+    ]
 }

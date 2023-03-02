@@ -17,20 +17,20 @@ impl Default for Reverse {
 
 impl Reverse {
     pub fn opts() -> Vec<Opt> {
-        let mut opts: Vec<Opt> = Vec::new();
-        opts.push(Opt {
-            name: "LHOST".to_string(),
-            description: "Listener host".to_string(),
-            default_value: Some("0.0.0.0".to_string()),
-            value: Some("0.0.0.0".to_string()),
-        });
-        opts.push(Opt {
-            name: "LPORT".to_string(),
-            description: "Listener port".to_string(),
-            default_value: Some("9092".to_string()),
-            value: Some("9092".to_string()),
-        });
-        opts
+        vec![
+            Opt {
+                name: "LHOST".to_string(),
+                description: "Listener host".to_string(),
+                default_value: Some("0.0.0.0".to_string()),
+                value: Some("0.0.0.0".to_string()),
+            },
+            Opt {
+                name: "LPORT".to_string(),
+                description: "Listener port".to_string(),
+                default_value: Some("9092".to_string()),
+                value: Some("9092".to_string()),
+            },
+        ]
     }
 }
 
