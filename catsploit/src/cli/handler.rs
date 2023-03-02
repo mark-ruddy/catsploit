@@ -54,25 +54,22 @@ impl Cli {
     }
 
     pub fn handle_info(&self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
-        match subcmd {
-            Some(module_path) => {
-                let parsed_module_path = self.parse_module_path(&module_path)?;
-                match parsed_module_path.kind {
-                    Kind::Exploit => {
-                        let exploit = find_exploit(&module_path)
-                            .ok_or(err_msgs::no_exploits_exist(&module_path))?;
-                        self.print_exploit(&exploit.info())?;
-                    }
-                    Kind::Payload => {
-                        let payload = find_payload(&module_path)
-                            .ok_or(err_msgs::no_payloads_exist(&module_path))?;
-                        self.print_payload(&payload.info())?;
-                    }
-                    Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+        if let Some(module_path) = subcmd {
+            let parsed_module_path = self.parse_module_path(&module_path)?;
+            match parsed_module_path.kind {
+                Kind::Exploit => {
+                    let exploit = find_exploit(&module_path)
+                        .ok_or_else(|| err_msgs::no_exploits_exist(&module_path))?;
+                    self.print_exploit(&exploit.info())?;
                 }
-                return Ok(());
+                Kind::Payload => {
+                    let payload = find_payload(&module_path)
+                        .ok_or_else(|| err_msgs::no_payloads_exist(&module_path))?;
+                    self.print_payload(&payload.info())?;
+                }
+                Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             }
-            None => (),
+            return Ok(());
         }
 
         match &self.selected_module_kind {
@@ -97,12 +94,9 @@ impl Cli {
     pub fn handle_use(&mut self, subcmd: Option<String>) -> Result<(), Box<dyn Error>> {
         match subcmd {
             Some(subcmd) => {
-                match subcmd.parse::<usize>() {
-                    Ok(subcmd) => {
-                        self.use_from_displayed_list(&subcmd)?;
-                        return Ok(());
-                    }
-                    Err(_) => (),
+                if let Ok(subcmd) = subcmd.parse::<usize>() {
+                    self.use_from_displayed_list(&subcmd)?;
+                    return Ok(());
                 }
                 self.handle_use_with_module_path(&subcmd)?;
             }

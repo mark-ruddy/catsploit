@@ -10,8 +10,8 @@ impl Cli {
                 let mut opts_table = Table::new();
                 opts_table.add_row(row!["Name", "Description", "Default", "Current"]);
                 for opt in selected_module_opts {
-                    let default_value = opt.default_value.clone().unwrap_or("".to_string());
-                    let value = opt.value.clone().unwrap_or("".to_string());
+                    let default_value = opt.default_value.clone().unwrap_or_default();
+                    let value = opt.value.clone().unwrap_or_default();
                     opts_table.add_row(row![opt.name, opt.description, default_value, value,]);
                 }
                 opts_table.printstd();
