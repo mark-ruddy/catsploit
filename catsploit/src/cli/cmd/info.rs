@@ -1,10 +1,25 @@
-use catsploit_lib::core::{exploit, payload};
+use catsploit_lib::core::{auxiliary, exploit, payload};
 use prettytable::Table;
 use std::error::Error;
 
 use crate::cli::Cli;
 
 impl Cli {
+    pub fn print_auxiliary(&self, info: &auxiliary::Info) -> Result<(), Box<dyn Error>> {
+        let mut auxiliary_table = Table::new();
+        auxiliary_table.add_row(row!["Name", "Module Path", "Kind", "Description"]);
+        auxiliary_table.add_row(row![
+            info.descriptive_name,
+            info.module_path,
+            info.kind,
+            info.description
+        ]);
+        auxiliary_table.printstd();
+
+        self.print_opts();
+        Ok(())
+    }
+
     pub fn print_exploit(&self, info: &exploit::Info) -> Result<(), Box<dyn Error>> {
         let mut exploit_table = Table::new();
         exploit_table.add_row(row![
@@ -12,14 +27,16 @@ impl Cli {
             "Module Path",
             "Disclosure Date",
             "Kind",
-            "Ranking"
+            "Ranking",
+            "Description"
         ]);
         exploit_table.add_row(row![
             info.descriptive_name,
             info.module_path,
             info.disclosure_date,
             info.kind,
-            info.ranking
+            info.ranking,
+            info.description
         ]);
         exploit_table.printstd();
 
@@ -38,8 +55,18 @@ impl Cli {
 
     pub fn print_payload(&self, info: &payload::Info) -> Result<(), Box<dyn Error>> {
         let mut payload_table = Table::new();
-        payload_table.add_row(row!["Name", "Module Path", "Kind"]);
-        payload_table.add_row(row![info.descriptive_name, info.module_path, info.kind]);
+        if let Some(description) = info.description.clone() {
+            payload_table.add_row(row!["Name", "Module Path", "Kind", "Description"]);
+            payload_table.add_row(row![
+                info.descriptive_name,
+                info.module_path,
+                info.kind,
+                description
+            ]);
+        } else {
+            payload_table.add_row(row!["Name", "Module Path", "Kind"]);
+            payload_table.add_row(row![info.descriptive_name, info.module_path, info.kind,]);
+        }
         payload_table.printstd();
 
         self.print_opts();

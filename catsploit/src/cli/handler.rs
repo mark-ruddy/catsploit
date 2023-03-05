@@ -1,5 +1,5 @@
 use super::{
-    cmd::use_module::{find_exploit, find_payload},
+    cmd::use_module::{find_auxiliary, find_exploit, find_payload},
     Cli,
 };
 use crate::{err_msgs, MODULE_KINDS};
@@ -44,6 +44,8 @@ impl Cli {
         const SHOW_SUBCMD_INCORRECT: &str = "Possible options for show are 'exploits', 'payloads'";
         match subcmd {
             Some(subcmd) => match subcmd.as_str() {
+                "auxiliary" => self.show_auxiliary(false),
+                "auxiliaries" => self.show_auxiliary(false),
                 "exploits" => self.show_exploits(false),
                 "payloads" => self.show_payloads(false),
                 _ => return Err(SHOW_SUBCMD_INCORRECT.into()),
@@ -57,6 +59,11 @@ impl Cli {
         if let Some(module_path) = subcmd {
             let parsed_module_path = self.parse_module_path(&module_path)?;
             match parsed_module_path.kind {
+                Kind::Auxiliary => {
+                    let auxiliary = find_auxiliary(&module_path)
+                        .ok_or_else(|| err_msgs::no_auxiliaries_exist(&module_path))?;
+                    self.print_auxiliary(&auxiliary.info())?;
+                }
                 Kind::Exploit => {
                     let exploit = find_exploit(&module_path)
                         .ok_or_else(|| err_msgs::no_exploits_exist(&module_path))?;
@@ -67,13 +74,17 @@ impl Cli {
                         .ok_or_else(|| err_msgs::no_payloads_exist(&module_path))?;
                     self.print_payload(&payload.info())?;
                 }
-                Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             }
             return Ok(());
         }
 
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
+                Kind::Auxiliary => self.print_auxiliary(
+                    self.auxiliary_info
+                        .as_ref()
+                        .ok_or(err_msgs::NO_AUXILIARY_MODULE_INFO)?,
+                )?,
                 Kind::Exploit => self.print_exploit(
                     self.exploit_info
                         .as_ref()
@@ -84,7 +95,6 @@ impl Cli {
                         .as_ref()
                         .ok_or(err_msgs::NO_PAYLOAD_MODULE_INFO)?,
                 )?,
-                Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
             },
             None => return Err("Info requires a module to be selected".into()),
         }
@@ -141,7 +151,8 @@ impl Cli {
         match &self.selected_module_kind {
             Some(selected_module_kind) => match selected_module_kind {
                 Kind::Exploit => self.run_exploit()?,
-                _ => return Err("Run is supported for 'exploit' modules only".into()),
+                Kind::Auxiliary => self.run_auxiliary()?,
+                _ => return Err("Run is supported for 'exploit', 'auxiliary' modules only".into()),
             },
             None => return Err("Module kind is not set".into()),
         };
