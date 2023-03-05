@@ -1,6 +1,7 @@
 use super::defaults;
 use catsploit_lib::{
     core::{
+        auxiliary::{self, Auxiliary},
         exploit::{self, Exploit},
         opt::Opt,
         payload::{self, Payload},
@@ -36,6 +37,9 @@ pub struct Cli {
     pub previous_module_opts: HashMap<String, Vec<Opt>>,
     pub displayed_list: HashMap<usize, String>,
 
+    pub auxiliary: Option<Box<dyn Auxiliary + Send + Sync>>,
+    pub auxiliary_info: Option<auxiliary::Info>,
+
     pub exploit: Option<Box<dyn Exploit>>,
     pub exploit_info: Option<exploit::Info>,
     pub exploit_payload: Option<Box<dyn Payload + Send + Sync>>,
@@ -53,6 +57,9 @@ impl Default for Cli {
             selected_module_opts: None,
             previous_module_opts: HashMap::new(),
             displayed_list: HashMap::new(),
+
+            auxiliary: None,
+            auxiliary_info: None,
 
             exploit: None,
             exploit_info: None,

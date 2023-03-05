@@ -7,7 +7,7 @@ mod cli;
 mod defaults;
 mod err_msgs;
 
-const MODULE_KINDS: [&str; 2] = ["exploit", "payload"];
+const MODULE_KINDS: [&str; 3] = ["auxiliary", "exploit", "payload"];
 
 fn main() -> Result<(), Box<dyn Error>> {
     env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();

@@ -1,4 +1,7 @@
+use crate::core::auxiliary::Auxiliary;
 use crate::core::{exploit::Exploit, payload::Payload};
+
+use crate::module::auxiliary::osint::my_ip::MyIp;
 
 use crate::module::exploit::ftp::vsftpd_234_backdoor::Vsftpd234Backdoor;
 
@@ -15,4 +18,8 @@ pub fn payloads() -> Vec<Box<dyn Payload + Send + Sync>> {
         Box::new(RubyReverseTcp::default()),
         Box::new(NcMkfifoReverseTcp::default()),
     ]
+}
+
+pub fn auxiliary() -> Vec<Box<dyn Auxiliary + Send + Sync>> {
+    vec![Box::new(MyIp::default())]
 }

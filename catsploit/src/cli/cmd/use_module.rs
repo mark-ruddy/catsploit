@@ -1,8 +1,19 @@
-use catsploit_lib::core::{exploit::Exploit, payload::Payload};
+use catsploit_lib::core::{auxiliary::Auxiliary, exploit::Exploit, payload::Payload};
 use catsploit_lib::module::{index, Kind};
 use std::error::Error;
 
 use crate::cli::Cli;
+
+pub fn find_auxiliary(module_path: &str) -> Option<Box<dyn Auxiliary + Send + Sync>> {
+    let auxiliaries = index::auxiliary();
+    let mut selected_auxiliary: Option<Box<dyn Auxiliary + Send + Sync>> = None;
+    for auxiliary in auxiliaries {
+        if auxiliary.info().module_path == module_path {
+            selected_auxiliary = Some(auxiliary);
+        }
+    }
+    selected_auxiliary
+}
 
 pub fn find_exploit(module_path: &str) -> Option<Box<dyn Exploit>> {
     let exploits = index::exploits();
@@ -41,6 +52,30 @@ impl Cli {
         }
     }
 
+    pub fn use_auxiliary(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
+        let selected_auxiliary = find_auxiliary(module_path);
+        match selected_auxiliary {
+            Some(auxiliary) => {
+                let auxiliary_info = auxiliary.info();
+                self.prompt = Some(auxiliary_info.module_path.clone());
+                self.selected_module_kind = Some(Kind::Auxiliary);
+                self.selected_module_path = Some(auxiliary_info.module_path.clone());
+
+                match self.apply_previous_module_opts(module_path) {
+                    true => (),
+                    false => self.selected_module_opts = auxiliary.opts(),
+                }
+
+                self.auxiliary = Some(auxiliary);
+                self.auxiliary_info = Some(auxiliary_info);
+                Ok(())
+            }
+            None => {
+                Err(format!("No auxiliary found with the module path '{}'", module_path).into())
+            }
+        }
+    }
+
     pub fn use_exploit(&mut self, module_path: &str) -> Result<(), Box<dyn Error>> {
         let selected_exploit = find_exploit(module_path);
         match selected_exploit {
@@ -52,7 +87,7 @@ impl Cli {
 
                 match self.apply_previous_module_opts(module_path) {
                     true => (),
-                    false => self.selected_module_opts = Some(exploit.opts()),
+                    false => self.selected_module_opts = exploit.opts(),
                 }
 
                 self.exploit = Some(exploit);
@@ -74,7 +109,7 @@ impl Cli {
 
                 match self.apply_previous_module_opts(module_path) {
                     true => (),
-                    false => self.selected_module_opts = Some(payload.opts()),
+                    false => self.selected_module_opts = payload.opts(),
                 }
 
                 self.payload = Some(payload);

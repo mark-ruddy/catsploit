@@ -5,11 +5,9 @@ use crate::cli::Cli;
 impl Cli {
     pub fn run_exploit(&mut self) -> Result<(), Box<dyn Error>> {
         if let Some(exploit) = &mut self.exploit {
-            exploit.apply_opts(
-                self.selected_module_opts
-                    .clone()
-                    .ok_or("No module options set to apply to exploit")?,
-            )?;
+            if let Some(selected_module_opts) = self.selected_module_opts.clone() {
+                exploit.apply_opts(selected_module_opts)?;
+            }
 
             let mut exploit_payload = self
                 .exploit_payload
@@ -22,10 +20,22 @@ impl Cli {
                     exploit_payload.apply_opts(previous_module_opts.clone())?;
                 }
                 None => {
-                    exploit_payload.apply_opts(exploit_payload.opts())?;
+                    if let Some(exploit_payload_opts) = exploit_payload.opts() {
+                        exploit_payload.apply_opts(exploit_payload_opts)?;
+                    }
                 }
             };
             exploit.exploit(&exploit_payload)?;
+        }
+        Ok(())
+    }
+
+    pub fn run_auxiliary(&mut self) -> Result<(), Box<dyn Error>> {
+        if let Some(auxiliary) = &mut self.auxiliary {
+            if let Some(selected_module_opts) = self.selected_module_opts.clone() {
+                auxiliary.apply_opts(selected_module_opts)?;
+            }
+            auxiliary.run()?;
         }
         Ok(())
     }
