@@ -110,7 +110,7 @@ impl Cli {
         match parsed_module_path.kind {
             Kind::Exploit => self.use_exploit(module_path)?,
             Kind::Payload => self.use_payload(module_path)?,
-            Kind::Auxiliary => return Err("Auxiliary info not supported yet".into()),
+            Kind::Auxiliary => self.use_auxiliary(module_path)?,
         }
         Ok(())
     }

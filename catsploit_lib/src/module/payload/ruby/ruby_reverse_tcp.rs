@@ -55,11 +55,11 @@ impl Payload for RubyReverseTcp {
         }
     }
 
-    fn opts(&self) -> Vec<Opt> {
+    fn opts(&self) -> Option<Vec<Opt>> {
         let mut opts: Vec<Opt> = Vec::new();
         let mut reverse_opts = Reverse::opts();
         opts.append(&mut reverse_opts);
-        opts
+        Some(opts)
     }
 
     fn apply_opts(&mut self, opts: Vec<Opt>) -> Result<(), Box<dyn Error>> {

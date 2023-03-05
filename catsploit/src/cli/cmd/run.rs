@@ -22,7 +22,9 @@ impl Cli {
                     exploit_payload.apply_opts(previous_module_opts.clone())?;
                 }
                 None => {
-                    exploit_payload.apply_opts(exploit_payload.opts())?;
+                    if let Some(exploit_payload_opts) = exploit_payload.opts() {
+                        exploit_payload.apply_opts(exploit_payload_opts)?;
+                    }
                 }
             };
             exploit.exploit(&exploit_payload)?;
