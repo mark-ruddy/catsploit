@@ -1,20 +1,14 @@
 use dyn_clone::DynClone;
-use std::{error::Error, fmt};
+use std::{error::Error, fmt::Display};
 
 use super::opt::Opt;
 
 pub mod reverse;
 
-#[derive(PartialEq, Eq, Debug)]
+#[derive(PartialEq, Eq, Debug, Display)]
 pub enum Kind {
     ReverseShell,
     DirectShell,
-}
-
-impl fmt::Display for Kind {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
-    }
 }
 
 pub struct Info {

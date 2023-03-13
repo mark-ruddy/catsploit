@@ -1,18 +1,12 @@
 use dyn_clone::DynClone;
-use std::{error::Error, fmt};
+use std::{error::Error, fmt::Display};
 
 use super::opt::Opt;
 
-#[derive(Debug)]
+#[derive(Debug, Display)]
 pub enum Kind {
     Scanner,
     Osint,
-}
-
-impl fmt::Display for Kind {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Debug::fmt(self, f)
-    }
 }
 
 pub struct Info {
