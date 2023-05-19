@@ -1,8 +1,6 @@
 # Catsploit
 Catsploit is an open-source modern exploitation framework inspired by [Metasploit](https://github.com/rapid7/metasploit-framework).
 
-Catsploit is currently in early development and the project is aiming to attract contributors who are interested in building the next generation exploitation framework in Rust.  
-
 The project will always be 100% open-source with no premium version, and is licensed under GPLv3.
 
 ## Install
@@ -31,8 +29,6 @@ In this exploitation a virtual machine with Metasploitable2 is running at `172.1
 Contributing to Catsploit is very flexible, check the current open issues to work on. Feel free to open a new issue for an enhancement and work on the PR from there.  
 
 Github Actions CI/CD will run the automated unit/integration tests against your PR code. Set your code editor to automatically format your code with [rustfmt](https://github.com/rust-lang/rustfmt) for consistent formatting within catsploit.
-
-And join the discord to discuss catsploit! https://discord.gg/J3Mj8ZG2bq
 
 ## Code Structure
 - The `catsploit` directory contains only the code to create the CLI app, such as the user input loop and dealing with setting module options. `catsploit` interacts with the `catsploit_lib` library
