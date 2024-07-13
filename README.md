@@ -1,8 +1,6 @@
 # Catsploit
 Catsploit is an open-source modern exploitation framework inspired by [Metasploit](https://github.com/rapid7/metasploit-framework).
 
-The project will always be 100% open-source with no premium version, and is licensed under GPLv3.
-
 ## Install
 To install as a crate: `cargo install catsploit`
 
